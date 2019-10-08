@@ -14,5 +14,5 @@ module.exports = app => {
    * @describe 登陆、注册
    */
   // 注册
-  apiV1Router.post('/login/register', controller.home.index);
+  apiV1Router.post('/login/register', controller.login.register);
 };
