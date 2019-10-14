@@ -7,11 +7,6 @@ class SignController extends Controller {
   async signUp() {
     const { ctx } = this;
     const { password, username, email } = ctx.request.body;
-    ctx.body = password + username + email;
-    const pass = ctx.helper.encrypt.rsaEncrypt(password);
-    console.log(pass.length);
-    const decrypt = ctx.helper.encrypt.rsaDecrypt(pass);
-    console.log(decrypt);
     await ctx.service.user.register({ password, username, email });
   }
 

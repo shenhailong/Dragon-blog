@@ -3,35 +3,34 @@
 const Service = require('egg').Service;
 const uuid = require('uuid');
 class UserService extends Service {
-  // 注册
+  // 注册，先判断是否已经存在，之后在创建
   async register(user) {
     const { ctx } = this;
-    // 生成唯一码
-    user.userId = uuid.v4().replace(/-/g, '');
-    const queryResult = await this.hasRegister(user.email);
+    const queryResult = await this.hasRegister(user.username);
     if (queryResult) {
-      ctx.body = 200;
-      ctx.body = {
-        msg: '占用',
-      };
+      ctx.returnBody(200, '用户名已存在');
       return;
     }
-    // 没有就创建
+    // 生成token
+    const newToken = ctx.helper.token.createToken({
+      username: user.username,
+      password: user.password,
+    });
+    // 生成唯一码
+    user.userId = uuid.v4().replace(/-/g, '');
+    user.token = newToken;
     const userInfo = await ctx.model.User.create(user);
-    ctx.body = 200;
-    ctx.body = {
-      msg: '注册成功',
-      userId: user.userId,
-    };
-    return userInfo.dataValues;
+    ctx.returnBody(200, '注册成功', {
+      ...userInfo.dataValues,
+    });
   }
 
   // 判断是否已经注册过
-  async hasRegister(email) {
+  async hasRegister(username) {
     const { ctx } = this;
     const user = await ctx.model.User.findOne({
       where: {
-        email,
+        username,
       },
     });
     if (user && user.dataValues.userId) {
@@ -62,6 +61,8 @@ class UserService extends Service {
         ctx.returnBody(200, '登陆成功', {
           token: newToken,
         });
+      } else {
+        ctx.returnBody(200, '密码错误');
       }
     }
   }

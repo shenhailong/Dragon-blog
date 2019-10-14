@@ -22,11 +22,11 @@ module.exports = {
         allowNull: false,
       },
       token: {
-        type: STRING(512),
+        type: STRING(1024),
         allowNull: true,
       },
       password: {
-        type: STRING(255),
+        type: STRING(1024),
         allowNull: false,
       },
       mobile: STRING(32),

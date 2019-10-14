@@ -16,7 +16,4 @@ module.exports = app => {
   apiV1Router.post('/sign/signUp', controller.sign.signUp);
   // 登陆
   apiV1Router.post('/sign/signIn', controller.sign.signIn);
-  // 测试登陆
-  apiV1Router.post('/sign/testSignIn', controller.sign.testSignIn);
-
 };
