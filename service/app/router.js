@@ -8,11 +8,15 @@ module.exports = app => {
   // 版本
   const apiV1Router = router.namespace('/api/v1');
   apiV1Router.get('/', controller.home.index);
-
   /**
    * @param *
-   * @describe 登陆、注册
+   * @describe 登陆、注册相关
    */
   // 注册
-  apiV1Router.post('/login/register', controller.login.register);
+  apiV1Router.post('/sign/signUp', controller.sign.signUp);
+  // 登陆
+  apiV1Router.post('/sign/signIn', controller.sign.signIn);
+  // 测试登陆
+  apiV1Router.post('/sign/testSignIn', controller.sign.testSignIn);
+
 };

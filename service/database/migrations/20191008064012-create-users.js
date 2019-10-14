@@ -21,6 +21,10 @@ module.exports = {
         type: STRING(255),
         allowNull: false,
       },
+      token: {
+        type: STRING(512),
+        allowNull: true,
+      },
       password: {
         type: STRING(255),
         allowNull: false,

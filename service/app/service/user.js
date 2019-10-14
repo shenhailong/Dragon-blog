@@ -3,6 +3,7 @@
 const Service = require('egg').Service;
 const uuid = require('uuid');
 class UserService extends Service {
+  // 注册
   async register(user) {
     const { ctx } = this;
     // 生成唯一码
@@ -37,6 +38,50 @@ class UserService extends Service {
       return true;
     }
     return false;
+  }
+
+  // 登陆
+  async signIn(user) {
+    const { ctx } = this;
+    const userInfo = await this.getUserByUserName(user.username);
+    if (!userInfo) {
+      ctx.returnBody(200, '用户不存在');
+      return;
+    }
+    if (userInfo.dataValues.password) {
+      const passInDatabase = ctx.helper.encrypt.rsaDecrypt(userInfo.dataValues.password); // 数据库解密后的密码
+      const passInput = ctx.helper.encrypt.rsaDecrypt(user.password); // 用户输入解密后的密码
+      if (passInDatabase === passInput) {
+        const newToken = ctx.helper.token.createToken({
+          username: user.username,
+          password: user.password,
+        });
+        await this.updateUser(user.username, {
+          token: newToken,
+        });
+        ctx.returnBody(200, '登陆成功', {
+          token: newToken,
+        });
+      }
+    }
+  }
+
+  // 更新用户token
+  async updateUser(username, data = {}) {
+    return await this.ctx.model.User.update(data, {
+      where: {
+        username,
+      },
+    });
+  }
+
+  // 根据用户名查找用户
+  async getUserByUserName(username) {
+    return await this.ctx.model.User.findOne({
+      where: {
+        username,
+      },
+    });
   }
 }
 

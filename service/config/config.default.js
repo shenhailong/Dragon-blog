@@ -22,11 +22,16 @@ module.exports = appInfo => {
   };
 
   // add your middleware config here
-  config.middleware = [];
+  config.middleware = [ 'jwt' ];
 
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',
+  };
+
+  config.jwt = {
+    enable: true,
+    ignore: [ '/sign/in' ], // 那些请求不需要认证
   };
 
   config.sequelize = {
