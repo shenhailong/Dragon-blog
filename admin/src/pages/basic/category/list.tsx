@@ -46,17 +46,23 @@ class Index extends PureComponent<IProps, IStates> {
       expandForm: false,
       columns: [
         {
-          title: '部门名称',
+          title: '分类名称',
           dataIndex: 'name',
           key: 'name'
         },
         {
-          title: '部门级别',
-          dataIndex: 'pid',
+          title: '排序',
+          dataIndex: 'order',
           align: 'center',
-          key: 'pid',
-          render: (pid: number) => (
-            <span>{pid > 0 ? '二级' : '一级'}</span>
+          key: 'order'
+        },
+        {
+          title: '状态',
+          dataIndex: 'status',
+          align: 'center',
+          key: 'status',
+          render: (status: number) => (
+            <span>{status > 0 ? '二级' : '一级'}</span>
           )
         },
         {

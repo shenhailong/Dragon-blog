@@ -5,15 +5,13 @@ import {
   Button,
   Card,
   InputNumber,
-  Radio,
-  Select
+  Radio
 } from 'antd';
 import { connect } from 'dva';
 import { Department } from '@/ts/department'
 import { ConnectProps } from '@/ts/connect';
 import { formItemLayout, submitFormLayout} from '@/constants/formStyle'
 const FormItem = Form.Item;
-const { Option } = Select;
 
 interface IOwnProps {
   id?: string | number;
@@ -44,20 +42,12 @@ class Edit extends PureComponent<IProps, IStates> {
   }
 
   componentWillMount() {
-    const { dispatch, id, basic } = this.props;
+    const { dispatch, id } = this.props;
     if(id){
       if(dispatch){
         dispatch({
           type: 'department/fetchDetail',
           payload: id
-        });
-      }
-    }
-
-    if(!basic.department.length){
-      if(dispatch){
-        dispatch({
-          type: 'basic/fetchDepartmentAll'
         });
       }
     }
@@ -76,13 +66,12 @@ class Edit extends PureComponent<IProps, IStates> {
         }
         if(dispatch){
           dispatch({
-            type: `department/${id ? 'edit' : 'add'}`,
+            type: `category/${id ? 'edit' : 'add'}`,
             payload: {
               ...sendData
             },
             callback: () => {
               this.props.removeTabHandler(`Edit${id}`)
-              // 操作之后更新全部部门列表下拉框选项
               dispatch({
                 type: 'basic/fetchDepartmentAll'
               });
@@ -105,16 +94,10 @@ class Edit extends PureComponent<IProps, IStates> {
       var detail = this.props.department[id] ? this.props.department[id] : {}
     }
 
-    let pid = getFieldValue('pid') || (detail && detail.pid ? detail.pid : -1)
-    let isSecond = pid !== -1 // 是否是二级部门
-    // 9999是为了不为空值
-    let secondValue = (detail && detail.parentDepartment ? detail.parentDepartment.id : 9999)
-    let filterDepartment= department.filter((item: Department) => item.pid < 0)
-
     return (
       <Card>
         <Form {...formItemLayout} onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
-          <FormItem label='部门名称'>
+          <FormItem label='分类名称'>
             {getFieldDecorator('name', {
               initialValue: detail ? detail.name : '',
               rules: [
@@ -137,43 +120,21 @@ class Edit extends PureComponent<IProps, IStates> {
                   message: '请输入排序',
                 },
               ],
-            })(<InputNumber placeholder='请输入排序' min={1} max={100}/>)}
+            })(<InputNumber placeholder='请输入排序' min={1} max={100} style={{width: '200px'}} />)}
           </FormItem>
-          <Form.Item label="级别">
-            {getFieldDecorator('pid', {
-              initialValue: detail ? detail.pid : -1,
+          <Form.Item label="状态">
+            {getFieldDecorator('status', {
+              initialValue: detail ? detail.status : true,
               rules: [
-                { required: true, message: '请选择级别' },
+                { required: true, message: '请选择状态' },
               ],
             })(
               <Radio.Group>
-                <Radio value={-1}>一级</Radio>
-                <Radio value={secondValue}>二级</Radio>
+                <Radio value={true}>开启</Radio>
+                <Radio value={false}>关闭</Radio>
               </Radio.Group>,
             )}
           </Form.Item>
-          {
-            !!isSecond &&
-            <Form.Item label="所属部门">
-              {getFieldDecorator('parentDepartment.id', {
-                initialValue: detail && detail.parentDepartment ? detail.parentDepartment.id : undefined,
-                rules: [
-                  { required: true, message: '请选择所属一级部门' },
-                ],
-              })(
-                <Select placeholder="请选择所属一级部门">
-                  {
-                    filterDepartment.map( (item: Department) => {
-                      return (
-                        <Option value={item.id} key={item.id}>{item.name}</Option>
-                      )
-                    })
-                  }
-                </Select>
-              )}
-            </Form.Item>
-          }
-
           <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
             <Button type="primary" htmlType="submit" loading={this.state.submitting}>
               提交
