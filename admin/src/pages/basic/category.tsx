@@ -1,7 +1,7 @@
 import React from 'react';
 import { insideAddTabData }from '@/ts/tabs'
-import List from './department/list'
-import Edit from './department/edit'
+import List from './category/list'
+import Edit from './category/edit'
 import MyTabs from '@/components/InsideTabs'
 import NewTabs from '@/extends/insideTabs'
 
@@ -26,7 +26,7 @@ class Index extends NewTabs {
   constructor(props: Readonly<IProps>) {
     super(props);
     const panes = [{
-      title: '部门列表',
+      title: '分类列表',
       content: this.renderTab('List'),
       key: 'List',
       closable: false
