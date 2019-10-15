@@ -14,18 +14,18 @@ const Routes: IRoute[] = [
     component: '../layouts/app-layout.tsx',
     routes: [
       { path: '/', redirect: DefaultIndex },
-      // {
-      //   path: '/dashboard',
-      //   name: 'dashboard',
-      //   icon: 'dashboard',
-      //   routes: [
-      //     {
-      //       path: '/dashboard/analysis',
-      //       name: 'analysis',
-      //       component: './dashboard/analysis',
-      //     }
-      //   ]
-      // },
+      {
+        path: '/dashboard',
+        name: 'dashboard',
+        icon: 'dashboard',
+        routes: [
+          {
+            path: '/dashboard/analysis',
+            name: 'analysis',
+            component: './dashboard/analysis',
+          }
+        ]
+      },
       {
         path: '/basic',
         name: 'basic',
@@ -34,9 +34,9 @@ const Routes: IRoute[] = [
         Routes: ['src/pages/Authorized'],
         routes: [
           {
-            path: '/basic/department',
-            name: 'department',
-            component: './basic/department',
+            path: '/basic/category',
+            name: 'category',
+            component: './basic/category',
           },
           {
             path: '/basic/title',
