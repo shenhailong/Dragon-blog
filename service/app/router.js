@@ -18,4 +18,11 @@ module.exports = app => {
   apiV1Router.post('/sign/signIn', controller.sign.signIn);
   // 获取公钥
   apiV1Router.get('/sign/getPublicKey', controller.sign.getPublicKey);
+
+  /**
+   * @param *
+   * @describe 分类
+   */
+  // 创建分类
+  apiV1Router.resources('category', '/category', controller.category);
 };
