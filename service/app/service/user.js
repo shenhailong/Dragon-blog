@@ -20,7 +20,7 @@ class UserService extends Service {
     user.userId = uuid.v4().replace(/-/g, '');
     user.token = newToken;
     const userInfo = await ctx.model.User.create(user);
-    ctx.returnBody(200, '注册成功', {
+    ctx.returnBody(200, '注册成功', '1', {
       ...userInfo.dataValues,
     });
   }
@@ -55,14 +55,16 @@ class UserService extends Service {
           username: user.username,
           password: user.password,
         });
+        // 更新用户token
         await this.updateUser(user.username, {
           token: newToken,
         });
-        ctx.returnBody(200, '登陆成功', {
-          token: newToken,
+        const newUserInfo = await this.getUserByUserName(user.username);
+        ctx.returnBody(200, '登陆成功', '1', {
+          ...newUserInfo.dataValues,
         });
       } else {
-        ctx.returnBody(200, '密码错误');
+        ctx.returnBody(200, '密码错误', '0');
       }
     }
   }

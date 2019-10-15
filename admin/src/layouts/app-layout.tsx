@@ -368,12 +368,12 @@ class BasicLayout extends Component<IProps, IStates> {
               }
             </Tabs>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>大诚若谷员工通讯录管理平台</Footer>
+          <Footer style={{ textAlign: 'center' }}>博客管理平台</Footer>
         </Layout>
       </Layout>
     )
     return (
-      <DocumentTitle title={'员工通讯录'}>
+      <DocumentTitle title={'Dragon驿站'}>
         <LocaleProvider locale={zhCN}>
           <ContainerQuery query={query}>
             {params => (

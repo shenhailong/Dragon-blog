@@ -1,23 +1,13 @@
 import request from '@/utils/request';
-
-import { ResponseModel } from '@/models/response';
-import { LoginFormModel } from '@/models/login';
+import { LoginFormModel } from '@/ts/login';
 
 export async function doLogin(data: LoginFormModel) {
-  return new Promise(res =>
-    setTimeout(() => {
-      res({
-        data: {
-          code: 1,
-          data: {
-            name: '超级管理员'
-          }
-        }
-      });
-    }, 1000),
-  );
-  // return request(`/api/login`, {
-  //   method: 'POST',
-  //   data
-  // });
+  return request(`/api/v1/sign/signIn`, {
+    method: 'POST',
+    data
+  });
+}
+
+export async function getPublicKey() {
+  return await request(`/api/v1/sign/getPublicKey`);
 }

@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { Model } from 'dva';
-import { doLogin } from '@/services/login';
+import { doLogin, getPublicKey } from '@/services/login';
 import { ResponseModel } from '@/models/response';
 import { ResponseSuccess } from '@/constants/response'
 import { UserModel } from '@/models/user';
@@ -11,21 +11,27 @@ export default {
   namespace: 'login',
   state: {},
   effects: {
+    // 获取公钥
+    *getPublicKey({ payload, callback }, { call, put }) {
+      const res: ResponseModel<any> = yield call(getPublicKey);
+      if(String(res.code) === String(ResponseSuccess)){
+        callback(res.data);
+      }
+    },
     *login({ payload }, { call, put }) {
       const res: ResponseModel<any> = yield call(doLogin, payload);
       // TODO: 这里不转换一下类型，ts还一直报错，待查
-      if (String(res.data.code) === String(ResponseSuccess)) {
+      if (String(res.code) === String(ResponseSuccess)) {
         yield put({
           type: 'changeLoginStatus',
           payload: {
             currentAuthority: 'admin'
           },
         });
-        const loginInfo = res.data.data;
+        const loginInfo = res.data;
         // 需在umi.ts中定义常量才可以
         const TOKEN_KEY = process.env.TOKEN_KEY as string;
-        // const token = loginInfo.accessToken.accessToken;
-        // window.localStorage.setItem(TOKEN_KEY, loginInfo);
+        window.localStorage.setItem(TOKEN_KEY, loginInfo.token);
         window.localStorage.setItem('user', JSON.stringify(loginInfo));
 
         const urlParams = new URL(window.location.href);
@@ -57,9 +63,3 @@ export default {
     },
   }
 } as Model;
-
-export interface LoginFormModel {
-  username: string;
-  password: string;
-  remember: boolean;
-}

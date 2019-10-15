@@ -1,27 +1,27 @@
-import { Form,Alert,Button, Input,Checkbox, Icon, Modal } from "antd";
+import JSEncrypt from 'jsencrypt';
+import { Form, Alert, Button, Input, Checkbox, Icon, Modal } from "antd";
 import { connect } from "dva";
-import React, {Component} from "react";
-import { formatMessage } from "umi-plugin-locale";
+import React, { Component } from "react";
 import Link from "umi/link";
 import styles from "./login.less";
 import { FormComponentProps } from "antd/lib/form/Form";
 import { message } from 'antd';
+import { ConnectProps } from '@/ts/connect';
 
 
-interface IPassProps extends FormComponentProps{}
+interface IPassProps extends FormComponentProps { }
 interface IOwnProps {
   login: string;
   submitting: boolean;
 }
 interface IDispatchProps {
-  dispatchLogin: (values:any) => void
 }
 interface IStates {
+  key: string;
   autoLogin: boolean;
 }
 
-type IProps = IPassProps & IOwnProps & IDispatchProps;
-
+type IProps = IPassProps & IOwnProps & IDispatchProps & ConnectProps;
 
 function mapStateToProps(state: any, ownProps: any) {
   // console.log(state);
@@ -31,42 +31,60 @@ function mapStateToProps(state: any, ownProps: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any, ownProps: any) {
-  return {
-    dispatchLogin(values: any) {
-      dispatch({
-        type: 'login/login',
-        payload: {
-          ...values
-        }
-      })
-    }
-  };
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
+// @connect(mapStateToProps, mapDispatchToProps)
 class Login extends Component<IProps, IStates> {
-   public state = {
+  public state = {
+    key: '',
     autoLogin: true
   };
 
-   public changeAutoLogin = (e: any) => {
+  public changeAutoLogin = (e: any) => {
     this.setState({
       autoLogin: e.target.checked,
     });
   }
 
-  handleSubmit = (e:React.FormEvent) => {
-    e.preventDefault()
-    this.props.form.validateFields((err, values) => {
-      if(!err) {
-        if(values.username !== 'admin' || values.password !== 'JCLwBNCzbKnGwB6F'){
-          message.error('请输入正确的用户名或密码')
-        }else{
-          this.props.dispatchLogin(values)
-        }
+  componentWillMount() {
+    const { form, dispatch } = this.props;
+    dispatch({
+      type: 'login/getPublicKey',
+      callback: (data: string) => {
+        this.setState({
+          key: data
+        })
       }
     })
+  }
+
+  // 提交
+  handleSubmit = (e: React.FormEvent) => {
+    const { form, dispatch } = this.props;
+    e.preventDefault();
+    form.validateFieldsAndScroll((err: any, values: any) => {
+      if (!err) {
+        values.password = this.rsaEncrypt(values.password, this.state.key);
+        dispatch({
+          type: 'login/login',
+          payload: {
+            ...values
+          },
+          callback: (data: string) => {
+            console.log('?')
+          }
+        })
+      }
+    });
+  };
+
+  //
+  rsaEncrypt = (text: string, publicKey: string) => {
+    // public key 是来自后端保存好的公钥
+    // let _publicKey =
+    //   "-----BEGIN PUBLIC KEY-----" + publicKey + "-----END PUBLIC KEY-----";
+    let encrypt = new JSEncrypt();
+    encrypt.setPublicKey(publicKey);
+    let encrypted = encrypt.encrypt(text);
+    return encrypted;
   }
 
   render() {
@@ -76,22 +94,26 @@ class Login extends Component<IProps, IStates> {
     return (
       <Form onSubmit={this.handleSubmit} className={styles.main}>
         <Form.Item>
-          {getFieldDecorator('username', {rules: [{
-            required: true, message: '请输入用户名'
-          }]})(
+          {getFieldDecorator('username', {
+            rules: [{
+              required: true, message: '请输入用户名'
+            }]
+          })(
             <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }}/>}
-              placeholder="用户名"/>
+              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="用户名" />
           )}
         </Form.Item>
         <Form.Item>
-          {getFieldDecorator('password',{rules:[{
-            required: true, message: '请输入密码'
-          }]})(
+          {getFieldDecorator('password', {
+            rules: [{
+              required: true, message: '请输入密码'
+            }]
+          })(
             <Input
-              prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
               type="password"
-              placeholder="密码"/>
+              placeholder="密码" />
           )}
         </Form.Item>
         <Form.Item className={styles.other}>
@@ -119,5 +141,9 @@ class Login extends Component<IProps, IStates> {
     );
   }
 }
+const App = Form.create<IProps>({})(Login);
 
-export default Form.create({ name: 'user_login' })(Login);
+export default connect(() => ({
+
+}))(App);
+// export default Form.create({ name: 'user_login' })(Login);

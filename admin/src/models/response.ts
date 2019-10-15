@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 
-export interface ResponseModel<T> extends AxiosResponse<ServerResponseModel<T>> {}
+export interface ResponseModel<T> extends ServerResponseModel<T> {}
 /**
  * 返回对象
  * code

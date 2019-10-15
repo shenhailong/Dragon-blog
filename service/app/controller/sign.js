@@ -17,6 +17,13 @@ class SignController extends Controller {
     await ctx.service.user.signIn({ username, password });
   }
 
+  // 获取公钥
+  async getPublicKey() {
+    const { ctx } = this;
+    const key = ctx.helper.encrypt.getPublicKey();
+    ctx.returnBody(200, 'success', '1', key);
+  }
+
 }
 
 module.exports = SignController;

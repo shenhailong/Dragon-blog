@@ -18,7 +18,7 @@ class Index extends PureComponent<IProps, IStates> {
     const user = window.localStorage.getItem('user');
     let name = ''
     if(user){
-      name = JSON.parse(user).name
+      name = JSON.parse(user).username
     }
     const menu = (
       <Menu>

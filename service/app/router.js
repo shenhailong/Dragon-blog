@@ -16,4 +16,6 @@ module.exports = app => {
   apiV1Router.post('/sign/signUp', controller.sign.signUp);
   // 登陆
   apiV1Router.post('/sign/signIn', controller.sign.signIn);
+  // 获取公钥
+  apiV1Router.get('/sign/getPublicKey', controller.sign.getPublicKey);
 };

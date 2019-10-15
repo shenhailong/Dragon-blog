@@ -22,11 +22,11 @@ class UserLayout extends Component {
         <div className={styles.top}>
           <div className={styles.header}>
             <Link to="/">
-              <img alt="logo" className={styles.logo} src={logo} />
-              <span className={styles.title}>大诚若谷员工通讯录管理平台</span>
+              {/* <img alt="logo" className={styles.logo} src={logo} /> */}
+              <span className={styles.title}>驿站管理平台</span>
             </Link>
           </div>
-          <div className={styles.desc}>大诚若谷技术部出品</div>
+          <div className={styles.desc}>Dragon驿站</div>
         </div>
         {children}
       </div>

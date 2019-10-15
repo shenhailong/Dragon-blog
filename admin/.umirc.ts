@@ -39,7 +39,7 @@ const config: IConfig = {
   ],
   devServer: {
     proxy: {
-      '/api/**': { target: 'http://127.0.0.1:7001/' }
+      '/api/v1/**': { target: 'http://127.0.0.1:7001' }
     }
   },
   define: {

@@ -41,6 +41,6 @@ export type Dispatch = <P = any, C = (payload: P) => void>(action: {
  * @type T: Params matched in dynamic routing
  */
 export interface ConnectProps {
-  dispatch?: Dispatch;
+  dispatch: Dispatch;
   route?: any;
 }

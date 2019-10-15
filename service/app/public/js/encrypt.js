@@ -47,6 +47,5 @@ exports.getPublicKey = () => {
   _publicKey = _publicKey.toString();
   _publicKey = _publicKey.split('\r\n');
   _publicKey = _publicKey.join('');
-  console.log(_publicKey.toString());
   return _publicKey.toString();
 };
