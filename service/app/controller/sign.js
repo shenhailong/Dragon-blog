@@ -21,7 +21,9 @@ class SignController extends Controller {
   async getPublicKey() {
     const { ctx } = this;
     const key = ctx.helper.encrypt.getPublicKey();
-    ctx.returnBody(200, 'success', '1', key);
+    ctx.returnBody({
+      data: key,
+    });
   }
 
 }

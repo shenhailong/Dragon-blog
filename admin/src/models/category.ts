@@ -3,9 +3,7 @@ import { message } from 'antd';
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
 import { ResponseSuccess } from '@/constants/response';
-import { editData } from  '@/ts/category';
-import { type } from 'os';
-
+import { Category } from  '@/ts/category';
 export interface CategoryModelState {
   total: number;
   list: [];
@@ -23,9 +21,7 @@ export interface CategoryModelType {
     edit: Effect;
   };
   reducers: {
-    save: Reducer<editData>;
-    add: Reducer<editData>;
-    detail: Reducer<editData>;
+    save: Reducer<Category>;
   };
 }
 
@@ -58,14 +54,6 @@ const Model: CategoryModelType = {
       if(res.code === ResponseSuccess){
         message.success('添加成功');
         if (callback) callback();
-        // const res = yield call(queryDepartment);
-        // yield put({
-        //   type: 'save',
-        //   payload: {
-        //     list: res.data,
-        //     total: res.data.count
-        //   }
-        // });
       }
     },
     // 编辑
@@ -89,14 +77,6 @@ const Model: CategoryModelType = {
       if(response.code === ResponseSuccess){
         message.success('删除成功');
         if (callback) callback();
-        // const res = yield call(queryDepartment);
-        // yield put({
-        //   type: 'save',
-        //   payload: {
-        //     list: res.data,
-        //     total: res.data.count
-        //   }
-        // });
       }
     },
   },
@@ -107,19 +87,6 @@ const Model: CategoryModelType = {
         ...state,
         list: action.payload.list,
         total: action.payload.total,
-      };
-    },
-    add(state, action) {
-      return {
-        ...state,
-        [action.payload.key]: action.payload.data
-      };
-    },
-    // FIXME: 这里考虑是否需要优化（现在所有数据都放到state），考虑拆分不同namespace，或者直接把数据写到业务页面
-    detail(state, action) {
-      return {
-        ...state,
-        [action.payload.key]: action.payload.data
       };
     }
   }

@@ -6,41 +6,52 @@ class CategoryService extends Service {
   async index(data) {
     const { ctx } = this;
     const list = await this.getCategoryList(data);
-    ctx.returnBody(200, 'success', '1', list);
+    ctx.returnBody({
+      data: list,
+    });
   }
   // 创建
   async create(data) {
     const { ctx } = this;
     const category = await this.getCategoryByName(data.name);
     if (category) {
-      ctx.returnBody(200, '名称已经存在', '0', {}, false);
+      ctx.returnBody({
+        message: '名称已经存在',
+        code: '0',
+        success: false,
+      });
       return;
     }
     await ctx.model.Category.create(data);
-    ctx.returnBody(200, '创建成功', '1');
+    ctx.returnBody({});
   }
 
   // 编辑
   async update(id, data) {
-    console.log(data)
     const { ctx } = this;
     const category = await this.getCategoryByName(data.name);
     if (category && (category.dataValues.id !== id)) {
-      ctx.returnBody(200, '名称已经存在', '0', {}, false);
+      ctx.returnBody({
+        message: '名称已经存在',
+        code: '0',
+        success: false,
+      });
     }
     await this.ctx.model.Category.update(data, {
       where: {
         id,
       },
     });
-    ctx.returnBody(200, '编辑成功', '1');
+    ctx.returnBody({});
   }
 
   // 详情
   async show(id) {
     const { ctx } = this;
     const detail = await this.getCategoryById(id);
-    ctx.returnBody(200, 'success', '1', detail);
+    ctx.returnBody({
+      data: detail,
+    });
   }
 
   // 删除
@@ -51,7 +62,7 @@ class CategoryService extends Service {
         id,
       },
     });
-    ctx.returnBody(200, 'success', '1');
+    ctx.returnBody({});
   }
 
   // 根据id获取

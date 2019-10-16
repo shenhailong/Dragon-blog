@@ -10,13 +10,13 @@ import {
 } from 'antd';
 import { insideAddTabData }from '@/ts/tabs'
 import {FormComponentProps} from 'antd/lib/form/Form';
-import { employee } from '@/ts/employee'
+import { Category } from '@/ts/category'
 import { ConnectProps } from '@/ts/connect';
 import styles from './list.less'
 
 interface IOwnProps {
   addTabHandler: (data: insideAddTabData) => void;
-  department: {
+  category: {
     list: [];
     total: number;
   }
@@ -32,11 +32,6 @@ interface IStates {
   dataSource: any;
 }
 
-interface columnsData {
-  name: string;
-  id: number;
-  pid: number
-}
 type IProps = IOwnProps & IDispatchProps & FormComponentProps & ConnectProps;
 
 class Index extends PureComponent<IProps, IStates> {
@@ -68,7 +63,7 @@ class Index extends PureComponent<IProps, IStates> {
         {
           title: '操作',
           align: 'center',
-          render: (text: any, record: columnsData) => (
+          render: (text: any, record: Category) => (
             <span>
               <a onClick={() => { this.add('Edit', `编辑-${record.name}`, record.id) }} href="javascript:;">编辑</a>
               <Divider type="vertical" />
@@ -83,11 +78,9 @@ class Index extends PureComponent<IProps, IStates> {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    if (dispatch) {
-      dispatch({
-        type: 'category/list',
-      });
-    }
+    dispatch({
+      type: 'category/list',
+    });
   }
 
   add = (type: string, title: string, id?: string | number) =>{
@@ -101,7 +94,7 @@ class Index extends PureComponent<IProps, IStates> {
   }
 
   // 删除
-  deleteData = (id: number, name: string) => {
+  deleteData = (id: number | string | undefined, name: string) => {
     const { dispatch } = this.props;
     Modal.confirm({
       title: '删除分类',
@@ -109,18 +102,16 @@ class Index extends PureComponent<IProps, IStates> {
       okText: '确认',
       cancelText: '取消',
       onOk: () => {
-        if (dispatch) {
-          dispatch({
-            type: 'category/remove',
-            payload: id,
-            callback: () => {
-              // 操作之后更新全部部门列表下拉框选项
-              // dispatch({
-              //   type: 'basic/fetchDepartmentAll'
-              // });
-            }
-          });
-        }
+        dispatch({
+          type: 'category/remove',
+          payload: id,
+          callback: () => {
+            // 操作之后更新列表
+            dispatch({
+              type: 'category/list',
+            });
+          }
+        });
       }
     });
   };
@@ -131,12 +122,10 @@ class Index extends PureComponent<IProps, IStates> {
       offset: (pagination.current - 1) * pagination.pageSize,
       limit: pagination.pageSize
     }
-    if (dispatch) {
-      dispatch({
-        type: 'department/fetch',
-        payload: params
-      });
-    }
+    dispatch({
+      type: 'category/list',
+      payload: params
+    });
   }
 
   render () {
@@ -145,11 +134,10 @@ class Index extends PureComponent<IProps, IStates> {
       category: {list, total}
     } = this.props;
     const pagination = {
-      // showSizeChanger: true,
-      // pageSizeOptions: ['10', '20', '30', '50'],
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '20', '30', '50'],
       total
     };
-    console.log(list)
 
     return (
       <div>
@@ -173,7 +161,7 @@ class Index extends PureComponent<IProps, IStates> {
 const App = Form.create<IProps>({})(Index);
 
 export default connect(({ category }: { category: {
-  list: employee[];
+  list: Category[];
   total: number;
 } }) => ({
   category

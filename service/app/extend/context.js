@@ -2,13 +2,17 @@
 module.exports = {
   /**
    * 返回客户端内容
-   * @param {Number} status // 返回状态码
-   * @param {String} message // 返回内容
-   * @param {String} code // code
-   * @param {any} data // 返回内容
-   * @param {Boolean} success // 成功与否
+   * @param {
+   *  Object: {
+   *    status: number; 状态码
+   *    message: string, 提示信息
+   *    code: string, code
+   *    data: object, 数据
+   *    success: boolean, 成功与否
+   *  }
+   * } data // 返回状态码
    */
-  returnBody(status = 200, message = 'success', code = '1', data = {}, success = true) {
+  returnBody({ status = 200, message = 'success', code = '1', data = {}, success = true }) {
     this.status = status;
     this.body = {
       code,

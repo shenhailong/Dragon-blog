@@ -1,10 +1,6 @@
-export interface editData {
-  name: string
-  order: number
-  status: boolean
-}
-
+// 分类管理
 export interface Category {
+  id?: string | number
   name: string
   order: number | string
   status: boolean

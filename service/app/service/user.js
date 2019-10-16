@@ -8,7 +8,11 @@ class UserService extends Service {
     const { ctx } = this;
     const queryResult = await this.hasRegister(user.username);
     if (queryResult) {
-      ctx.returnBody(200, '用户名已存在');
+      ctx.returnBody({
+        message: '用户名已存在',
+        code: '0',
+        success: false,
+      });
       return;
     }
     // 生成token
@@ -20,8 +24,10 @@ class UserService extends Service {
     user.userId = uuid.v4().replace(/-/g, '');
     user.token = newToken;
     const userInfo = await ctx.model.User.create(user);
-    ctx.returnBody(200, '注册成功', '1', {
-      ...userInfo.dataValues,
+    ctx.returnBody({
+      message: '注册成功',
+      code: '1',
+      data: userInfo.dataValues,
     });
   }
 
@@ -44,7 +50,11 @@ class UserService extends Service {
     const { ctx } = this;
     const userInfo = await this.getUserByUserName(user.username);
     if (!userInfo) {
-      ctx.returnBody(200, '用户不存在');
+      ctx.returnBody({
+        message: '用户不存在',
+        code: '0',
+        success: false,
+      });
       return;
     }
     if (userInfo.dataValues.password) {
@@ -60,11 +70,16 @@ class UserService extends Service {
           token: newToken,
         });
         const newUserInfo = await this.getUserByUserName(user.username);
-        ctx.returnBody(200, '登陆成功', '1', {
-          ...newUserInfo.dataValues,
+        ctx.returnBody({
+          message: '登陆成功',
+          data: newUserInfo.dataValues,
         });
       } else {
-        ctx.returnBody(200, '密码错误', '0');
+        ctx.returnBody({
+          message: '密码错误',
+          code: '0',
+          success: false,
+        });
       }
     }
   }
