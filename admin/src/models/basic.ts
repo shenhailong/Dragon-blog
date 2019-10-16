@@ -1,4 +1,4 @@
-import { queryDepartmentAll } from '@/services/department';
+// import { queryDepartmentAll } from '@/services/department';
 import { queryTitleAll } from '@/services/title';
 
 import { Effect } from 'dva';
@@ -36,13 +36,13 @@ const Model: BasicModelType = {
   effects: {
     // 获取全部部门列表
     *fetchDepartmentAll({ payload }, { call, put }) {
-      const response = yield call(queryDepartmentAll, payload);
-      if(response.code === ResponseSuccess){
-        yield put({
-          type: 'department',
-          payload: response.data
-        });
-      }
+      // const response = yield call(queryDepartmentAll, payload);
+      // if(response.code === ResponseSuccess){
+      //   yield put({
+      //     type: 'department',
+      //     payload: response.data
+      //   });
+      // }
     },
     // 获取全部职务
     *fetchTitleAll({ payload }, { call, put }) {
