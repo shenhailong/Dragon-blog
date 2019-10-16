@@ -43,6 +43,17 @@ class CategoryService extends Service {
     ctx.returnBody(200, 'success', '1', detail);
   }
 
+  // 删除
+  async destroy(id) {
+    const { ctx } = this;
+    await this.ctx.model.Category.destroy({
+      where: {
+        id,
+      },
+    });
+    ctx.returnBody(200, 'success', '1');
+  }
+
   // 根据id获取
   async getCategoryById(id) {
     return await this.ctx.model.Category.findOne({

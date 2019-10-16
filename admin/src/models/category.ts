@@ -1,4 +1,4 @@
-import { list, add, edit, detail } from '@/services/category';
+import { list, add, edit, detail, remove } from '@/services/category';
 import { message } from 'antd';
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
@@ -18,7 +18,7 @@ export interface CategoryModelType {
   effects: {
     list: Effect;
     add: Effect;
-    // remove: Effect;
+    remove: Effect;
     detail: Effect;
     edit: Effect;
   };
@@ -81,6 +81,22 @@ const Model: CategoryModelType = {
       const res = yield call(detail, payload);
       if(res.code === ResponseSuccess){
         callback(res.data)
+      }
+    },
+    // 删除
+    *remove({ payload, callback }, { call, put }) {
+      const response = yield call(remove, payload);
+      if(response.code === ResponseSuccess){
+        message.success('删除成功');
+        if (callback) callback();
+        // const res = yield call(queryDepartment);
+        // yield put({
+        //   type: 'save',
+        //   payload: {
+        //     list: res.data,
+        //     total: res.data.count
+        //   }
+        // });
       }
     },
   },

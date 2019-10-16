@@ -104,20 +104,20 @@ class Index extends PureComponent<IProps, IStates> {
   deleteData = (id: number, name: string) => {
     const { dispatch } = this.props;
     Modal.confirm({
-      title: '删除部门',
-      content: `确定删除部门--${name}吗？`,
+      title: '删除分类',
+      content: `确定删除分类--${name}吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk: () => {
         if (dispatch) {
           dispatch({
-            type: 'department/remove',
+            type: 'category/remove',
             payload: id,
             callback: () => {
               // 操作之后更新全部部门列表下拉框选项
-              dispatch({
-                type: 'basic/fetchDepartmentAll'
-              });
+              // dispatch({
+              //   type: 'basic/fetchDepartmentAll'
+              // });
             }
           });
         }

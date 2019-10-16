@@ -30,6 +30,12 @@ class CategoryController extends Controller {
     await ctx.service.category.update(id, { name, order, status });
   }
 
+  // 删除
+  async destroy() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    await ctx.service.category.destroy(id);
+  }
 }
 
 module.exports = CategoryController;

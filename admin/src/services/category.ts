@@ -32,3 +32,10 @@ export async function edit(id: number | string, data: Category) {
 export async function detail(id: string) {
   return request(`/api/v1/category/${id}`);
 }
+
+// 删除
+export async function remove(id: number | string) {
+  return request(`/api/v1/category/${id}`, {
+    method: 'DELETE'
+  });
+}
