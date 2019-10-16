@@ -62,7 +62,7 @@ class Index extends PureComponent<IProps, IStates> {
           align: 'center',
           key: 'status',
           render: (status: number) => (
-            <span>{status > 0 ? '二级' : '一级'}</span>
+            <span>{status ? '开启' : '关闭'}</span>
           )
         },
         {
@@ -85,7 +85,7 @@ class Index extends PureComponent<IProps, IStates> {
     const { dispatch } = this.props;
     if (dispatch) {
       dispatch({
-        type: 'department/fetch',
+        type: 'category/list',
       });
     }
   }
@@ -142,14 +142,14 @@ class Index extends PureComponent<IProps, IStates> {
   render () {
     const { columns } = this.state
     const {
-      department: {list, total}
+      category: {list, total}
     } = this.props;
-
     const pagination = {
       // showSizeChanger: true,
       // pageSizeOptions: ['10', '20', '30', '50'],
       total
     };
+    console.log(list)
 
     return (
       <div>
@@ -172,9 +172,9 @@ class Index extends PureComponent<IProps, IStates> {
 
 const App = Form.create<IProps>({})(Index);
 
-export default connect(({ department }: { department: {
+export default connect(({ category }: { category: {
   list: employee[];
   total: number;
 } }) => ({
-  department
+  category
 }))(App);

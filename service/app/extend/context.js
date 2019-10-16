@@ -8,7 +8,7 @@ module.exports = {
    * @param {any} data // 返回内容
    * @param {Boolean} success // 成功与否
    */
-  returnBody(status, message, code = '1', data = {}, success = true) {
+  returnBody(status = 200, message = 'success', code = '1', data = {}, success = true) {
     this.status = status;
     this.body = {
       code,

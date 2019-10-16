@@ -8,7 +8,7 @@ import {
   Radio
 } from 'antd';
 import { connect } from 'dva';
-import { Department } from '@/ts/department'
+import { Category } from '@/ts/category'
 import { ConnectProps } from '@/ts/connect';
 import { formItemLayout, submitFormLayout} from '@/constants/formStyle'
 const FormItem = Form.Item;
@@ -16,12 +16,6 @@ const FormItem = Form.Item;
 interface IOwnProps {
   id?: string | number;
   form: any;
-  department: {
-    [key: string]: any;
-  };
-  basic: {
-    department: Department[]
-  }
   removeTabHandler: (targetKey: string) => void
 }
 
@@ -29,6 +23,7 @@ interface IDispatchProps {}
 
 interface IStates {
   submitting: boolean;
+  detail: Category;
 }
 
 type IProps = IOwnProps & IDispatchProps & ConnectProps;
@@ -37,19 +32,27 @@ class Edit extends PureComponent<IProps, IStates> {
   constructor(props: Readonly<IProps>){
     super(props)
     this.state = {
-      submitting: false
+      submitting: false,
+      detail: {
+        name: '',
+        order: 0,
+        status: true
+      }
     }
   }
 
   componentWillMount() {
     const { dispatch, id } = this.props;
     if(id){
-      if(dispatch){
-        dispatch({
-          type: 'department/fetchDetail',
-          payload: id
-        });
-      }
+      dispatch({
+        type: 'category/detail',
+        payload: id,
+        callback: (data: Category) => {
+          this.setState({
+            detail: data
+          })
+        }
+      });
     }
   }
 
@@ -73,7 +76,7 @@ class Edit extends PureComponent<IProps, IStates> {
             callback: () => {
               this.props.removeTabHandler(`Edit${id}`)
               dispatch({
-                type: 'basic/fetchDepartmentAll'
+                type: 'category/list'
               });
             }
           });
@@ -84,16 +87,9 @@ class Edit extends PureComponent<IProps, IStates> {
 
   render () {
     const {
-      form: { getFieldDecorator, getFieldValue },
-      id,
-      basic: {
-        department
-      }
+      form: { getFieldDecorator },
     } = this.props;
-    if(id){
-      var detail = this.props.department[id] ? this.props.department[id] : {}
-    }
-
+    let detail = this.state.detail
     return (
       <Card>
         <Form {...formItemLayout} onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
@@ -105,8 +101,8 @@ class Edit extends PureComponent<IProps, IStates> {
                   touched: true,
                   required: true,
                   message: '请输入名称',
-                },
-              ],
+                }
+              ]
             })(<Input placeholder='请输入名称' maxLength={100} />)}
           </FormItem>
           <FormItem label='排序'>
@@ -118,8 +114,8 @@ class Edit extends PureComponent<IProps, IStates> {
                   touched: true,
                   required: true,
                   message: '请输入排序',
-                },
-              ],
+                }
+              ]
             })(<InputNumber placeholder='请输入排序' min={1} max={100} style={{width: '200px'}} />)}
           </FormItem>
           <Form.Item label="状态">
@@ -132,7 +128,7 @@ class Edit extends PureComponent<IProps, IStates> {
               <Radio.Group>
                 <Radio value={true}>开启</Radio>
                 <Radio value={false}>关闭</Radio>
-              </Radio.Group>,
+              </Radio.Group>
             )}
           </Form.Item>
           <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
@@ -147,10 +143,4 @@ class Edit extends PureComponent<IProps, IStates> {
 }
 
 const MyComponent =  Form.create<IProps>({})(Edit)
-
-export default connect(({ department, basic }: { department: Department, basic: {
-  department: Department[]
-}}) => ({
-  department,
-  basic
-}))(MyComponent);
+export default connect(() => ({}))(MyComponent);

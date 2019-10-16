@@ -1,4 +1,4 @@
-import { add } from '@/services/category';
+import { list, add, edit, detail } from '@/services/category';
 import { message } from 'antd';
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
@@ -6,21 +6,21 @@ import { ResponseSuccess } from '@/constants/response';
 import { editData } from  '@/ts/category';
 import { type } from 'os';
 
-export interface EmployeeModelState {
+export interface CategoryModelState {
   total: number;
   list: [];
   title: [];
 }
 
-export interface EmployeeModelType {
+export interface CategoryModelType {
   namespace: 'category';
-  state: EmployeeModelState;
+  state: CategoryModelState;
   effects: {
-    // fetch: Effect;
+    list: Effect;
     add: Effect;
     // remove: Effect;
-    // fetchDetail: Effect;
-    // edit: Effect;
+    detail: Effect;
+    edit: Effect;
   };
   reducers: {
     save: Reducer<editData>;
@@ -29,7 +29,7 @@ export interface EmployeeModelType {
   };
 }
 
-const Model: EmployeeModelType = {
+const Model: CategoryModelType = {
   namespace: 'category',
 
   state: {
@@ -39,10 +39,23 @@ const Model: EmployeeModelType = {
   },
 
   effects: {
+    // 获取列表
+    *list({ payload }, { call, put }) {
+      const res = yield call(list, payload);
+      if(res.code === ResponseSuccess){
+        yield put({
+          type: 'save',
+          payload: {
+            list: res.data.rows,
+            total: res.data.count
+          },
+        });
+      }
+    },
     // 新增
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(add, payload);
-      if(response.code === ResponseSuccess){
+      const res = yield call(add, payload);
+      if(res.code === ResponseSuccess){
         message.success('添加成功');
         if (callback) callback();
         // const res = yield call(queryDepartment);
@@ -54,7 +67,22 @@ const Model: EmployeeModelType = {
         //   }
         // });
       }
-    }
+    },
+    // 编辑
+    *edit({ payload, callback }, { call, put }) {
+      const response = yield call(edit, payload.id, payload.data);
+      if(response.code === ResponseSuccess){
+        message.success('提交成功');
+        if (callback) callback();
+      }
+    },
+    // 详情
+    *detail({ payload, callback }, { call, put }) {
+      const res = yield call(detail, payload);
+      if(res.code === ResponseSuccess){
+        callback(res.data)
+      }
+    },
   },
 
   reducers: {
