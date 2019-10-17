@@ -1,4 +1,4 @@
-import { list, add, edit, detail, remove } from '@/services/category';
+import { list, all, add, edit, detail, remove } from '@/services/category';
 import { message } from 'antd';
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
@@ -7,7 +7,7 @@ import { Category } from  '@/ts/category';
 export interface CategoryModelState {
   total: number;
   list: [];
-  title: [];
+  allList: []
 }
 
 export interface CategoryModelType {
@@ -15,6 +15,7 @@ export interface CategoryModelType {
   state: CategoryModelState;
   effects: {
     list: Effect;
+    all: Effect;
     add: Effect;
     remove: Effect;
     detail: Effect;
@@ -22,6 +23,7 @@ export interface CategoryModelType {
   };
   reducers: {
     save: Reducer<Category>;
+    saveAll: Reducer<Category>;
   };
 }
 
@@ -31,7 +33,7 @@ const Model: CategoryModelType = {
   state: {
     total: 0,
     list: [],
-    title: []
+    allList: []
   },
 
   effects: {
@@ -44,6 +46,19 @@ const Model: CategoryModelType = {
           payload: {
             list: res.data.rows,
             total: res.data.count
+          },
+        });
+      }
+    },
+    // 获取所有开启列表
+    *all({ payload }, { call, put }) {
+      const res = yield call(all, payload);
+      if(res.code === ResponseSuccess){
+        console.log(res.data)
+        yield put({
+          type: 'saveAll',
+          payload: {
+            list: res.data
           },
         });
       }
@@ -87,6 +102,13 @@ const Model: CategoryModelType = {
         ...state,
         list: action.payload.list,
         total: action.payload.total,
+      };
+    },
+    saveAll(state, action) {
+      console.log(action)
+      return {
+        ...state,
+        allList: action.payload.list
       };
     }
   }

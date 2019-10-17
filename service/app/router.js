@@ -24,8 +24,9 @@ module.exports = app => {
    * @describe 分类
    */
   // RESTful API
+  apiV1Router.get('/category/all', controller.category.all);
   apiV1Router.resources('category', '/category', controller.category);
-
+  
   /**
    * @param *
    * @describe 文章

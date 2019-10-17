@@ -18,9 +18,7 @@ import { insideAddTabData }from '@/ts/tabs';
 import {FormComponentProps} from 'antd/lib/form/Form';
 import { Article } from '@/ts/article';
 import { Category } from '@/ts/category';
-
 import { ConnectState, ConnectProps } from '@/ts/connect';
-
 import styles from './list.less'
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -32,6 +30,9 @@ interface IOwnProps {
     total: number;
     current: number;
     params: {};
+  };
+  category: {
+    allList: Category[];
   };
 }
 
@@ -127,7 +128,7 @@ class Index extends PureComponent<IProps, IStates> {
       type: 'article/list',
     });
     dispatch({
-      type: 'category/list',
+      type: 'category/all',
     });
   }
 
@@ -145,12 +146,9 @@ class Index extends PureComponent<IProps, IStates> {
   renderSimpleForm() {
     const {
       form: { getFieldDecorator, getFieldValue },
-      category
+      category: { allList }
     } = this.props;
 
-    let departmentId = getFieldValue('departmentId')
-    console.log(category)
-    let arr = []
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
@@ -167,7 +165,7 @@ class Index extends PureComponent<IProps, IStates> {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value={''} key={'selectEmpty'}>全部</Option>
                   {
-                    arr.map( (item: Category) => {
+                    allList.map( (item: Category) => {
                       return (
                         <Option value={item.id} key={item.id}>{item.name}</Option>
                       )

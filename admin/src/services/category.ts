@@ -12,6 +12,11 @@ export async function list(params: {
   });
 }
 
+// 所有开启的列表
+export async function all() {
+  return request(`/api/v1/category/all`);
+}
+
 // 新增
 export async function add(data: Category) {
   return request(`/api/v1/category`, {

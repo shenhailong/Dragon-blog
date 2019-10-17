@@ -9,6 +9,11 @@ class CategoryController extends Controller {
     const { limit = 10, offset = 0 } = ctx.request.body;
     await ctx.service.category.index({ limit, offset });
   }
+  // 列表(不分页)
+  async all() {
+    const { ctx } = this;
+    await ctx.service.category.all();
+  }
   // 创建
   async create() {
     const { ctx } = this;

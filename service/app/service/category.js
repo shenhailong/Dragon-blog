@@ -10,6 +10,14 @@ class CategoryService extends Service {
       data: list,
     });
   }
+  // 列表(开启状态全部)
+  async all() {
+    const { ctx } = this;
+    const list = await this.getAllCategoryList();
+    ctx.returnBody({
+      data: list,
+    });
+  }
   // 创建
   async create(data) {
     const { ctx } = this;
@@ -87,6 +95,15 @@ class CategoryService extends Service {
   async getCategoryList(query) {
     return await this.ctx.model.Category.findAndCountAll({
       query,
+    });
+  }
+
+  // 获取所有开启的列表数据
+  async getAllCategoryList() {
+    return await this.ctx.model.Category.findAll({
+      where: {
+        status: 1,
+      },
     });
   }
 }
