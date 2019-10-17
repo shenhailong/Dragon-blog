@@ -2,24 +2,23 @@
 
 const Controller = require('egg').Controller;
 
-class CategoryController extends Controller {
+class ArticleController extends Controller {
   // 列表
   async index() {
     const { ctx } = this;
     const { limit, offset } = ctx.request.body;
-    await ctx.service.category.index({ limit, offset });
+    await ctx.service.article.index({ limit, offset });
   }
   // 创建
   async create() {
     const { ctx } = this;
-    const { name, order, status } = ctx.request.body;
-    await ctx.service.category.create({ name, order, status });
+    await ctx.service.article.create(ctx.request.body);
   }
   // 详情
   async show() {
     const { ctx } = this;
     const { id } = ctx.params;
-    await ctx.service.category.show(id);
+    await ctx.service.article.show(id);
   }
 
   // 编辑
@@ -27,15 +26,15 @@ class CategoryController extends Controller {
     const { ctx } = this;
     const { id } = ctx.params;
     const { name, order, status } = ctx.request.body;
-    await ctx.service.category.update(id, { name, order, status });
+    await ctx.service.article.update(id, { name, order, status });
   }
 
   // 删除
   async destroy() {
     const { ctx } = this;
     const { id } = ctx.params;
-    await ctx.service.category.destroy(id);
+    await ctx.service.article.destroy(id);
   }
 }
 
-module.exports = CategoryController;
+module.exports = ArticleController;

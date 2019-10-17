@@ -23,6 +23,13 @@ module.exports = app => {
    * @param *
    * @describe 分类
    */
-  // 创建分类
+  // RESTful API
   apiV1Router.resources('category', '/category', controller.category);
+
+  /**
+   * @param *
+   * @describe 文章
+   */
+  // RESTful API
+  apiV1Router.resources('article', '/article', controller.article);
 };
