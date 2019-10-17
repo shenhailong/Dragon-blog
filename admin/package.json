@@ -12,11 +12,12 @@
   "dependencies": {
     "antd": "^3.15.0",
     "axios": "^0.19.0",
-    "braft-editor": "^2.3.7",
     "classnames": "^2.2.6",
     "dva": "^2.4.1",
+    "highlight.js": "^9.15.10",
     "jsencrypt": "^3.0.0-rc.1",
     "lodash": "^4.17.11",
+    "marked": "^0.7.0",
     "memoize-one": "^5.0.4",
     "path-to-regexp": "^3.0.0",
     "qs": "^6.7.0",
@@ -26,6 +27,7 @@
     "react-dom": "^16.7.0",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
+    "simplemde": "^1.11.2",
     "umi-request": "^1.1.0"
   },
   "devDependencies": {

@@ -2,12 +2,11 @@ import React, { Component, Suspense } from 'react';
 import { Layout, Menu, Icon } from 'antd';
 import PageLoading from '../PageLoading';
 import { location } from '@/ts/global';
-import logo from '../../assets/logo.png';
-import logoShrink from '../../assets/logo-shrink.png';
 import styles from './index.less';
 const BaseMenu = React.lazy(() => import('./BaseMenu'));
 const { Sider } = Layout;
-
+const logo = 'https://mirror-gold-cdn.xitu.io/168e092e37071588c3d?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1';
+const logoShrink = 'https://mirror-gold-cdn.xitu.io/168e092e37071588c3d?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1';
 interface IOwnProps {
   collapsed: boolean;
   menuData: any;

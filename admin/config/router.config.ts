@@ -54,6 +54,20 @@ const Routes: IRoute[] = [
             component: './basic/comment',
           },
         ]
+      },
+      {
+        path: '/article',
+        name: 'article',
+        icon: 'file-markdown',
+        authority: ['admin', 'user'],
+        Routes: ['src/pages/Authorized'],
+        routes: [
+          {
+            path: '/article/list',
+            name: 'list',
+            component: './article/list',
+          }
+        ]
       }
     ]
   }
