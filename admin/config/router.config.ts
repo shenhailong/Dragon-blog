@@ -39,20 +39,10 @@ const Routes: IRoute[] = [
             component: './basic/category',
           },
           {
-            path: '/basic/title',
-            name: 'title',
-            component: './basic/title',
-          },
-          {
             path: '/basic/employee',
             name: 'employee',
             component: './basic/employee',
-          },
-          {
-            path: '/basic/comment',
-            name: 'comment',
-            component: './basic/comment',
-          },
+          }
         ]
       },
       {

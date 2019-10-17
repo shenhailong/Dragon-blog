@@ -1,11 +1,11 @@
 // import { queryDepartmentAll } from '@/services/department';
-import { queryTitleAll } from '@/services/title';
+// import { queryTitleAll } from '@/services/title';
 
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
 import { ResponseSuccess } from '@/constants/response'
 import { Department } from  '@/ts/department';
-import { Title } from  '@/ts/title';
+// import { Title } from  '@/ts/title';
 
 export interface BasicModelState {
   department: [];
