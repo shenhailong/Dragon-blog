@@ -8,8 +8,8 @@ import {
   Radio
 } from 'antd';
 import { connect } from 'dva';
-// import { Title } from '@/ts/title'
-// import { Department } from '@/ts/department'
+import { Title } from '@/ts/title'
+import { Department } from '@/ts/department'
 import { formItemLayout, submitFormLayout} from '@/constants/formStyle'
 import { ConnectState, ConnectProps } from '@/ts/connect';
 
