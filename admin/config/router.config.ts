@@ -37,11 +37,6 @@ const Routes: IRoute[] = [
             path: '/basic/category',
             name: 'category',
             component: './basic/category',
-          },
-          {
-            path: '/basic/employee',
-            name: 'employee',
-            component: './basic/employee',
           }
         ]
       },
