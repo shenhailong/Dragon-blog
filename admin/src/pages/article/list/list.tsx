@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-
 import {
   Button,
   Table,
@@ -15,10 +14,10 @@ import {
   DatePicker,
   Modal
 } from 'antd';
-import { insideAddTabData }from '@/ts/tabs'
+import { insideAddTabData }from '@/ts/tabs';
 import {FormComponentProps} from 'antd/lib/form/Form';
-import { employee} from '@/ts/employee'
-import { Department } from '@/ts/department'
+import { Article } from '@/ts/article';
+import { Category } from '@/ts/category';
 
 import { ConnectState, ConnectProps } from '@/ts/connect';
 
@@ -28,16 +27,12 @@ const { Option } = Select;
 
 interface IOwnProps {
   addTabHandler: (data: insideAddTabData) => void;
-  employee: {
-    list: employee[];
+  article: {
+    list: Article[];
     total: number;
     current: number;
-    department: Department[];
     params: {};
   };
-  basic: {
-    department: Department[]
-  }
 }
 
 interface IDispatchProps {
@@ -56,8 +51,8 @@ interface columnsData {
 }
 type IProps = IOwnProps & IDispatchProps & FormComponentProps & ConnectProps;
 
-@connect(({ employee }: { employee: employee }) => ({
-  employee
+@connect(({ article }: { article: Article }) => ({
+  article
 }))
 
 class Index extends PureComponent<IProps, IStates> {
@@ -86,8 +81,8 @@ class Index extends PureComponent<IProps, IStates> {
         },
         {
           title: '封面图',
-          dataIndex: 'title',
-          key: 'title',
+          dataIndex: 'img',
+          key: 'img',
           render: (text: string, record: columnsData) => (
             <a onClick={() => { this.add('Detail', record.title, record.id) }} href="javascript:;">{text}</a>
           )
@@ -102,7 +97,7 @@ class Index extends PureComponent<IProps, IStates> {
           dataIndex: 'isOriginal',
           key: 'isOriginal',
           render: (text: boolean, record: columnsData) => (
-            <span>{text ? '男' : '女'}</span>
+            <span>{text ? '是' : '否'}</span>
           )
         },
         {
@@ -127,20 +122,13 @@ class Index extends PureComponent<IProps, IStates> {
   }
 
   componentDidMount() {
-    const { dispatch, basic} = this.props;
-    if (dispatch) {
-      dispatch({
-        type: 'employee/fetch',
-      });
-    }
-
-    if(!basic.department.length){
-      if(dispatch){
-        dispatch({
-          type: 'basic/fetchDepartmentAll',
-        });
-      }
-    }
+    const { dispatch} = this.props;
+    dispatch({
+      type: 'article/list',
+    });
+    dispatch({
+      type: 'category/list',
+    });
   }
 
   add = (type: string, title: string, id?: string | number) =>{
@@ -157,47 +145,29 @@ class Index extends PureComponent<IProps, IStates> {
   renderSimpleForm() {
     const {
       form: { getFieldDecorator, getFieldValue },
-      basic: { department },
+      category
     } = this.props;
 
     let departmentId = getFieldValue('departmentId')
-    let filterDepartment= department.filter((item: Department) => item.pid < 0)
-    let subdepartment= department.filter((item: Department) => item.pid === departmentId)
+    console.log(category)
+    let arr = []
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="文章标题">
+            <FormItem label="标题">
               {getFieldDecorator('name')(<Input placeholder="请输入文章标题" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="部门">
+            <FormItem label="分类">
               {getFieldDecorator('departmentId', {
-                initialValue: ''
-              })(
-                <Select onChange={this.departmentOnChange} placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value={''} key={'selectEmpty'}>全部</Option>
-                  {
-                    filterDepartment.map( (item: Department) => {
-                      return (
-                        <Option value={item.id} key={item.id}>{item.name}</Option>
-                      )
-                    })
-                  }
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="部门(二级)">
-              {getFieldDecorator('subdepartmentId', {
                 initialValue: ''
               })(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value={''} key={'selectEmpty'}>全部</Option>
                   {
-                    subdepartment.map( (item: Department) => {
+                    arr.map( (item: Category) => {
                       return (
                         <Option value={item.id} key={item.id}>{item.name}</Option>
                       )
@@ -207,7 +177,7 @@ class Index extends PureComponent<IProps, IStates> {
               )}
             </FormItem>
           </Col>
-          {/* <Col md={8} sm={24}>
+          <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
                 查询
@@ -219,21 +189,8 @@ class Index extends PureComponent<IProps, IStates> {
                 展开 <Icon type="down" />
               </a>
             </span>
-          </Col> */}
+          </Col>
         </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <div style={{ marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-              重置
-            </Button>
-            {/* <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
-            </a> */}
-          </div>
-        </div>
       </Form>
     );
   }
@@ -241,37 +198,23 @@ class Index extends PureComponent<IProps, IStates> {
   // 查询表单复杂模式
   renderAdvancedForm() {
     const {
-      form: { getFieldDecorator },
-      basic: { department },
+      form: { getFieldDecorator }
     } = this.props;
-
-    let filterDepartment= department.filter((item: Department) => item.pid < 0)
-
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="员工姓名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            <FormItem label="标题">
+              {getFieldDecorator('title')(<Input placeholder="请输入标题" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="部门">
-              {getFieldDecorator('departmentId')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {
-                    filterDepartment.map( (item: Department) => {
-                      return (
-                        <Option value={item.id} key={item.id}>{item.name}</Option>
-                      )
-                    })
-                  }
-                </Select>
-              )}
+            <FormItem label="关键字">
+              {getFieldDecorator('keyword')(<Input placeholder="请输入关键字" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="性别">
+            <FormItem label="分类">
               {getFieldDecorator('sex')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
@@ -283,7 +226,7 @@ class Index extends PureComponent<IProps, IStates> {
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="员工状态">
+            <FormItem label="状态">
               {getFieldDecorator('status3')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
@@ -293,7 +236,7 @@ class Index extends PureComponent<IProps, IStates> {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="员工类型">
+            <FormItem label="是否原创">
               {getFieldDecorator('status4')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
@@ -303,7 +246,7 @@ class Index extends PureComponent<IProps, IStates> {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="入职日期">
+            <FormItem label="创建日期">
               {getFieldDecorator('date')(
                 <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
               )}
@@ -332,16 +275,6 @@ class Index extends PureComponent<IProps, IStates> {
     return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
   }
 
-  // 选择部门有变化需要重置二级部门
-  departmentOnChange = () => {
-    const {
-      form: { setFieldsValue },
-    } = this.props;
-    setFieldsValue({
-      subdepartmentId: ''
-    })
-  }
-
   // 搜索
   handleSearch = (e: any) => {
     e.preventDefault();
@@ -355,7 +288,7 @@ class Index extends PureComponent<IProps, IStates> {
 
       if(dispatch){
         dispatch({
-          type: 'employee/fetch',
+          type: 'article/list',
           payload: values,
         });
       }
@@ -378,22 +311,22 @@ class Index extends PureComponent<IProps, IStates> {
 
   // 删除
   deleteData = (id: number, name: string) => {
-    const { dispatch, employee: {params} } = this.props;
+    const { dispatch, article: {params} } = this.props;
 
     Modal.confirm({
-      title: '删除员工',
-      content: `确定删除员工--${name}吗？`,
+      title: '删除文章',
+      content: `确定删除文章--${name}吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk: () => {
         if (dispatch) {
           dispatch({
-            type: 'employee/remove',
+            type: 'article/remove',
             payload: id,
             callback: () => {
               // 重新获取table列表（需要加上之前的搜索条件）
               dispatch({
-                type: 'employee/fetch',
+                type: 'article/list',
                 payload: {
                   ...params
                 }
@@ -406,7 +339,7 @@ class Index extends PureComponent<IProps, IStates> {
   };
 
   handleTableChange = (pagination: any) => {
-    const { dispatch, employee: {params} } = this.props;
+    const { dispatch, article: {params} } = this.props;
     let param = {
       offset: (pagination.current - 1) * pagination.pageSize,
       limit: pagination.pageSize,
@@ -415,7 +348,7 @@ class Index extends PureComponent<IProps, IStates> {
     }
     if (dispatch) {
       dispatch({
-        type: 'employee/fetch',
+        type: 'article/list',
         payload: param
       });
     }
@@ -424,7 +357,7 @@ class Index extends PureComponent<IProps, IStates> {
   render () {
     const { columns } = this.state
     const {
-      employee: {list, total, current}
+      article: {list, total, current}
     } = this.props;
 
     const pagination = {
@@ -440,7 +373,7 @@ class Index extends PureComponent<IProps, IStates> {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.add('Edit', '新建员工')}>
+              <Button icon="plus" type="primary" onClick={() => this.add('Edit', '新建文章')}>
                 新建
               </Button>
             </div>
@@ -456,13 +389,14 @@ class Index extends PureComponent<IProps, IStates> {
 
 const App = Form.create<IProps>({})(Index);
 
-export default connect(({ employee, basic }: { employee: {
-  list: employee[];
-  total: number;
-  current: number;
-}, basic: {
-  department: Department[]}
+export default connect(({ article, category }: {
+  article: {
+    list: Article[];
+    total: number;
+    current: number;
+  },
+  category: Category[]
 }) => ({
-  employee,
-  basic
+  article,
+  category
 }))(App);

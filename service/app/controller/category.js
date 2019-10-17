@@ -6,7 +6,7 @@ class CategoryController extends Controller {
   // 列表
   async index() {
     const { ctx } = this;
-    const { limit, offset } = ctx.request.body;
+    const { limit = 10, offset = 0 } = ctx.request.body;
     await ctx.service.category.index({ limit, offset });
   }
   // 创建

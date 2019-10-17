@@ -1,18 +1,18 @@
-import { list, add, edit, detail, remove } from '@/services/category';
+import { list, add, edit, detail, remove } from '@/services/article';
 import { message } from 'antd';
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
 import { ResponseSuccess } from '@/constants/response';
-import { Category } from  '@/ts/category';
-export interface CategoryModelState {
+import { Article } from  '@/ts/article';
+export interface ArticleModelState {
   total: number;
   list: [];
   title: [];
 }
 
-export interface CategoryModelType {
+export interface ArticleModelType {
   namespace: 'article';
-  state: CategoryModelState;
+  state: ArticleModelState;
   effects: {
     list: Effect;
     add: Effect;
@@ -21,11 +21,11 @@ export interface CategoryModelType {
     edit: Effect;
   };
   reducers: {
-    save: Reducer<Category>;
+    save: Reducer<Article>;
   };
 }
 
-const Model: CategoryModelType = {
+const Model: ArticleModelType = {
   namespace: 'article',
 
   state: {

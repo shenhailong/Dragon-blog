@@ -28,7 +28,7 @@ class Index extends NewTabs {
   constructor(props: Readonly<IProps>) {
     super(props);
     const panes = [{
-      title: '员工列表',
+      title: '文章列表',
       content: this.renderTab('List'),
       key: 'List',
       closable: false
