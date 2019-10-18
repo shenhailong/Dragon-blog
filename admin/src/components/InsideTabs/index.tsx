@@ -73,6 +73,7 @@ class Index extends PureComponent<IProps, IStates> {
           activeKey={activeKey}
           type="editable-card"
           onEdit={this.onEdit}
+          className="margin0"
         >
           {panes.map((pane: insideAddTabData) => (
             <TabPane

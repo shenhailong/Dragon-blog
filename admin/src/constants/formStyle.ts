@@ -9,6 +9,17 @@ const formItemLayout = {
     md: { span: 10 }
   }
 };
+const formItemLeftLayout = {
+  labelCol: {
+    xs: { span: 2 },
+    sm: { span: 2 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 12 },
+    md: { span: 10 }
+  }
+};
 
 const submitFormLayout = {
   wrapperCol: {
@@ -19,5 +30,6 @@ const submitFormLayout = {
 
 export {
   formItemLayout,
+  formItemLeftLayout,
   submitFormLayout
 }

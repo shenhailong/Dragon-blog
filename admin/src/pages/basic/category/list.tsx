@@ -144,7 +144,7 @@ class Index extends PureComponent<IProps, IStates> {
         <Card>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.add('Edit', '新建部门')}>
+              <Button icon="plus" type="primary" onClick={() => this.add('Edit', '新建分类')}>
                 新建
               </Button>
             </div>

@@ -8,24 +8,26 @@ import {
   Radio
 } from 'antd';
 import { connect } from 'dva';
-// import { Title } from '@/ts/title'
-// import { Department } from '@/ts/department'
-import { formItemLayout, submitFormLayout} from '@/constants/formStyle'
-import { ConnectState, ConnectProps } from '@/ts/connect';
+import { formItemLeftLayout, submitFormLayout} from '@/constants/formStyle'
+import {FormComponentProps} from 'antd/lib/form/Form';
 
+import { ConnectState, ConnectProps } from '@/ts/connect';
+import { Category } from '@/ts/category';
+import { Article } from '@/ts/article';
+import SimpleMDE from 'simplemde';
+import marked from 'marked';
+import highlight from 'highlight.js';
+import 'simplemde/dist/simplemde.min.css';
+// import './style.less';
 const FormItem = Form.Item;
 const { Option } = Select;
-
+const { TextArea } = Input;
 interface IOwnProps {
   id?: string | number;
   form: any;
-  employee: {
-    [key: string]: any;
+  category: {
+    allList: Category[];
   };
-  basic: {
-    department: Department[];
-    title: Title[]
-  }
   removeTabHandler: (targetKey: string) => void
 }
 
@@ -33,51 +35,73 @@ interface IDispatchProps {}
 
 interface IStates {
   submitting: boolean;
-  isChange: boolean
+  detail: Article;
+  editor: any;
 }
 
-type IProps = IOwnProps & IDispatchProps & ConnectProps;
+type IProps = IOwnProps & IDispatchProps & ConnectProps & FormComponentProps;
 
 class Edit extends PureComponent<IProps, IStates> {
-  constructor(props: Readonly<IProps>){
+  constructor(props: Readonly<IProps & FormComponentProps>){
     super(props)
     this.state = {
       submitting: false,
-      isChange: false
+      detail: {
+        title: '',
+        keyword: '',
+        isOriginal: true,
+        category: {
+          name: '',
+          order: '',
+          status: true
+        }
+      },
+      editor: null
     }
   }
 
   componentDidMount() {
-    const { dispatch, id, basic} = this.props;
-    // 获取部门选项
-    if(!basic.department.length){
-      if(dispatch){
-        dispatch({
-          type: 'basic/fetchDepartmentAll',
-        });
-      }
-    }
+    const { dispatch, id, category } = this.props;
+    this.setState({
+      editor: new SimpleMDE({
+        element: document.getElementById('content').childElementCount,
+        autofocus: true,
+        autosave: true,
+        previewRender(plainText: any) {
+          return marked(plainText, {
+            renderer: new marked.Renderer(),
+            gfm: true,
+            pedantic: false,
+            sanitize: false,
+            tables: true,
+            breaks: true,
+            smartLists: true,
+            smartypants: true,
+            highlight(code: any) {
+              return highlight.highlightAuto(code).value;
+            },
+          });
+        },
+      })
+    })
 
-    if(!basic.title.length){
-      if(dispatch){
-        dispatch({
-          type: 'basic/fetchTitleAll',
-        });
-      }
+    // 获取分类
+    if(!category.allList.length){
+      dispatch({
+        type: 'category/all',
+      });
     }
 
     if(id){
-      if(dispatch){
-        dispatch({
-          type: 'employee/fetchDetail',
-          payload: id
-        });
-      }
+      dispatch({
+        type: 'employee/fetchDetail',
+        payload: id
+      });
     }
   }
 
   handleSubmit = (e: any) => {
-    const { form, dispatch, id, employee: {params} } = this.props;
+    const { form, dispatch, id } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err: any, values: any) => {
       if (!err) {
@@ -89,19 +113,19 @@ class Edit extends PureComponent<IProps, IStates> {
         }
         if(dispatch){
           dispatch({
-            type: `employee/${id ? 'edit' : 'add'}`,
+            type: `article/${id ? 'edit' : 'add'}`,
             payload: {
               ...sendData
             },
             callback: () => {
               this.props.removeTabHandler(`Edit${id}`)
               // 重新获取table列表（需要加上之前的搜索条件）
-              dispatch({
-                type: 'employee/fetch',
-                payload: {
-                  ...params
-                }
-              });
+              // dispatch({
+              //   type: 'article/fetch',
+              //   payload: {
+              //     ...params
+              //   }
+              // });
             }
           });
         }
@@ -109,57 +133,25 @@ class Edit extends PureComponent<IProps, IStates> {
     });
   };
 
-  departmentOnChange = () => {
-    const {
-      form: { setFieldsValue },
-    } = this.props;
-    setFieldsValue({
-      titleId: undefined,
-      subdepartmentId: undefined
-    })
-    this.setState({
-      isChange: true
-    })
-  }
-
-  componentWillUnmount() {
-    // 重新获取存储
-    const { dispatch, id } = this.props;
-    if(dispatch){
-      dispatch({
-        type: 'employee/fetchDetail',
-        payload: id
-      });
-    }
-  }
-
   render () {
     const {
-      form: { getFieldDecorator, getFieldValue },
-      basic: { department, title },
-      id
+      form: { getFieldDecorator },
+      category: { allList }
     } = this.props;
-    if(id){
-      var detail = this.props.employee[id] ? this.props.employee[id] : {}
-    }
-    let departmentId = getFieldValue('departmentId') || (detail ? detail.departmentId : undefined)
-    let filterDepartment= department.filter((item: Department) => item.pid < 0)
-    let subdepartment= department.filter((item: Department) => item.pid === departmentId)
-    let filterTitle = title.filter((item: Title) => item.departmentId === departmentId)
-
+    let detail = this.state.detail
     return (
       <Card>
-        <Form {...formItemLayout} onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
-          <Form.Item label="所属部门">
-            {getFieldDecorator('departmentId', {
-              initialValue: detail ? detail.departmentId : undefined,
+        <Form {...formItemLeftLayout} onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
+          <Form.Item label="所属分类">
+            {getFieldDecorator('category', {
+              initialValue: detail ? detail.category.id : undefined,
               rules: [
-                { required: true, message: '请选择所属部门' },
+                { required: true, message: '请选择所属分类' },
               ],
             })(
-              <Select onChange={this.departmentOnChange} placeholder="请选择所属部门">
+              <Select placeholder="请选择所属分类">
                 {
-                  filterDepartment.map( (item: Department) => {
+                  allList.map( (item: Category) => {
                     return (
                       <Option value={item.id} key={item.id}>{item.name}</Option>
                     )
@@ -168,97 +160,35 @@ class Edit extends PureComponent<IProps, IStates> {
               </Select>
             )}
           </Form.Item>
-          {
-            !!subdepartment.length &&
-            <Form.Item label="部门(二级)">
-              {getFieldDecorator('subdepartmentId', {
-                initialValue: this.state.isChange ? undefined : (detail ? detail.subdepartmentId : undefined),
-                rules: [
-                  { required: true, message: '请选择所属部门(二级)' },
-                ],
-              })(
-                <Select placeholder="请选择所属部门(二级)">
-                  {
-                    subdepartment.map( (item: Department) => {
-                      return (
-                        <Option value={item.id} key={item.id}>{item.name}</Option>
-                      )
-                    })
-                  }
-                </Select>
-              )}
-            </Form.Item>
-          }
-          <Form.Item label="职务">
-            {getFieldDecorator('titleId', {
-              initialValue: detail ? detail.titleId : undefined,
-              rules: [
-                { required: true, message: '请选择职务' },
-              ],
-            })(
-              <Select placeholder="请选择职务">
-                {
-                  filterTitle.map( (item: Title) => {
-                    return (
-                      <Option value={item.id} key={item.id}>{item.name}</Option>
-                    )
-                  })
-                }
-              </Select>,
-            )}
-          </Form.Item>
-          <FormItem label='姓名'>
-            {getFieldDecorator('name', {
-              initialValue: detail ? detail.name : '',
+          <FormItem label='标题'>
+            {getFieldDecorator('title', {
+              initialValue: detail ? detail.title : '',
               rules: [
                 {
                   touched: true,
                   required: true,
-                  message: '请输入姓名',
+                  message: '请输入标题',
                 },
               ],
             })(<Input placeholder='请输入姓名' maxLength={30}/>)}
           </FormItem>
-          <FormItem label='邮箱'>
-            {getFieldDecorator('email', {
-              initialValue: detail ? detail.email : undefined,
+          <FormItem label='关键字'>
+            {getFieldDecorator('keyword', {
+              initialValue: detail ? detail.keyword : '',
               rules: [
                 {
-                  type: 'email',
                   touched: true,
-                  message: '请输入正确的邮箱',
+                  required: true,
+                  message: '请输入关键字',
                 },
               ],
-            })(<Input placeholder='请输入邮箱' maxLength={50}/>)}
+            })(<Input placeholder='请输入姓名' maxLength={30}/>)}
           </FormItem>
-          <FormItem label='分机号'>
-            {getFieldDecorator('extNumber', {
-              initialValue: detail ? detail.extNumber : undefined,
-            })(<Input placeholder='' maxLength={20}/>)}
-          </FormItem>
-          <FormItem label='备注'>
-            {getFieldDecorator('remark', {
-              initialValue: detail ? detail.remark : undefined,
-            })(<Input maxLength={100}/>)}
-          </FormItem>
-          <Form.Item label="性别">
-            {getFieldDecorator('sex', {
-              initialValue: detail ? detail.sex : undefined,
+          <Form.Item label="是否原创">
+            {getFieldDecorator('isOriginal', {
+              initialValue: detail ? detail.isOriginal : undefined,
               rules: [
-                { required: true, message: '请选择性别' },
-              ],
-            })(
-              <Radio.Group>
-                <Radio value={true}>男</Radio>
-                <Radio value={false}>女</Radio>
-              </Radio.Group>,
-            )}
-          </Form.Item>
-          <Form.Item label="是否领导">
-            {getFieldDecorator('isLeader', {
-              initialValue: detail ? detail.isLeader : undefined,
-              rules: [
-                { required: true, message: '请选择是否领导' },
+                { required: true, message: '请选择是否原创' },
               ],
             })(
               <Radio.Group>
@@ -267,6 +197,16 @@ class Edit extends PureComponent<IProps, IStates> {
               </Radio.Group>,
             )}
           </Form.Item>
+          <FormItem label='备注'>
+            {getFieldDecorator('remark', {
+              initialValue: detail ? detail.remark : undefined,
+            })(<Input maxLength={100}/>)}
+          </FormItem>
+          <FormItem label='备注'>
+            {getFieldDecorator('content', {
+              initialValue: detail ? detail.remark : undefined,
+            })(<TextArea rows={6} />)}
+          </FormItem>
           <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
             <Button type="primary" htmlType="submit" loading={this.state.submitting}>
               提交
@@ -280,18 +220,12 @@ class Edit extends PureComponent<IProps, IStates> {
 
 const MyComponent =  Form.create<IProps>({
   onFieldsChange: (props, changedFields) => {
-    if(changedFields.departmentId && !changedFields.titleId){
-      // props.form.setFieldsValue({
-      //   titleId: undefined
-      // })
-    }
+
   }
 })(Edit)
 
-export default connect(({ employee, basic }: { employee: any, basic: {
-  department: Department[];
-  title: Title[];
+export default connect(({ category }: { category: {
+  category: Category;
 }}) => ({
-  employee,
-  basic
+  category
 }))(MyComponent);

@@ -145,7 +145,7 @@ class Index extends PureComponent<IProps, IStates> {
   // 查询表单简单模式
   renderSimpleForm() {
     const {
-      form: { getFieldDecorator, getFieldValue },
+      form: { getFieldDecorator },
       category: { allList }
     } = this.props;
 

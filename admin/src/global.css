@@ -6,3 +6,8 @@ html, body, #root {
 body {
   margin: 0;
 }
+
+/* 去掉tab-bar间距 */
+.margin0 .ant-tabs-bar{
+  margin: 0;
+}

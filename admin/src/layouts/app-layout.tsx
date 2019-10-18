@@ -349,6 +349,7 @@ class BasicLayout extends Component<IProps, IStates> {
               hideAdd={true}
               type="editable-card"
               onEdit={this.onEdit}
+              className="margin0"
             >
               {
                 this.state.tabList.map((item) => (
