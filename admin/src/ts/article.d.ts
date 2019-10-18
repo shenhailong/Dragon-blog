@@ -8,5 +8,6 @@ export interface Article {
   status?: boolean;
   remark?: string;
   isOriginal: boolean;
+  content: string,
   category: Category;
 }

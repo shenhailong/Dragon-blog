@@ -54,14 +54,15 @@ class Edit extends PureComponent<IProps, IStates> {
           name: '',
           order: '',
           status: true
-        }
+        },
+        content: ''
       },
       editor: null
     }
   }
 
   componentDidMount() {
-    const { dispatch, id, category } = this.props;
+    const { dispatch, id, category, form: { setFieldsValue } } = this.props;
     this.setState({
       editor: new SimpleMDE({
         element: document.getElementById('content').childElementCount,
@@ -83,6 +84,12 @@ class Edit extends PureComponent<IProps, IStates> {
           });
         },
       })
+    }, () => {
+      this.state.editor.codemirror.on("change", () => {
+        setFieldsValue({
+          content: this.state.editor.value()
+        })
+      });
     })
 
     // 获取分类
@@ -202,9 +209,12 @@ class Edit extends PureComponent<IProps, IStates> {
               initialValue: detail ? detail.remark : undefined,
             })(<Input maxLength={100}/>)}
           </FormItem>
-          <FormItem label='备注'>
+          <FormItem label='文章内容'>
             {getFieldDecorator('content', {
-              initialValue: detail ? detail.remark : undefined,
+              initialValue: detail ? detail.content : undefined,
+              rules: [
+                { required: true, message: '请选择是否原创' },
+              ],
             })(<TextArea rows={6} />)}
           </FormItem>
           <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
@@ -218,11 +228,7 @@ class Edit extends PureComponent<IProps, IStates> {
   }
 }
 
-const MyComponent =  Form.create<IProps>({
-  onFieldsChange: (props, changedFields) => {
-
-  }
-})(Edit)
+const MyComponent = Form.create<IProps>()(Edit)
 
 export default connect(({ category }: { category: {
   category: Category;
