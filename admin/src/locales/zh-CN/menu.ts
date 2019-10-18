@@ -4,7 +4,6 @@ export default {
   'menu.dashboard.monitor': '监控页',
   'menu.basic': '基础信息管理',
   'menu.basic.category': '分类管理',
-  'menu.basic.employee': '员工管理',
   'menu.article': '文章管理',
   'menu.article.list': '文章列表',
 }

@@ -94,7 +94,7 @@ class Edit extends PureComponent<IProps, IStates> {
 
     if(id){
       dispatch({
-        type: 'employee/fetchDetail',
+        type: 'article/fetchDetail',
         payload: id
       });
     }

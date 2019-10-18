@@ -6,7 +6,7 @@ import logo from '../assets/logo-shrink.png';
 import styles from './user-layout.less';
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> 2019 大诚若谷技术部出品
+    Copyright <Icon type="copyright" /> 2019 Dragon 个人博客管理平台
   </Fragment>
 );
 

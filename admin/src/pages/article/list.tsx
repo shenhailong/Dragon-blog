@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { insideAddTabData }from '@/ts/tabs';
-import { employee } from '@/ts/employee';
 import List from './list/list';
 import Edit from './list/edit';
 import Detail from './list/detail';
