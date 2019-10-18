@@ -43,13 +43,13 @@ class Index extends NewTabs {
     let component = null
     switch (type) {
       case 'List':
-        component = <List addTabHandler={this.addTabHandler}/>;
+        component = <List addTabHandler={this.addTabHandler} />;
         break;
       case 'Edit':
-        component = <Edit id={id} removeTabHandler={this.remove}/>;
+        component = <Edit id={id} removeTabHandler={this.remove} />;
         break;
       case 'Detail':
-        component = <Detail />;
+        component = <Detail id={id} />;
         break;
     }
     return (

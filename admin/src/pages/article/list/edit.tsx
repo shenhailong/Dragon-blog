@@ -101,8 +101,14 @@ class Edit extends PureComponent<IProps, IStates> {
 
     if(id){
       dispatch({
-        type: 'article/fetchDetail',
-        payload: id
+        type: 'article/detail',
+        payload: id,
+        callback: (data: Article) => {
+          this.setState({
+            detail: data
+          })
+          this.state.editor.value(data.content)
+        }
       });
     }
   }
@@ -118,24 +124,22 @@ class Edit extends PureComponent<IProps, IStates> {
         } : {
           ...values
         }
-        if(dispatch){
-          dispatch({
-            type: `article/${id ? 'edit' : 'add'}`,
-            payload: {
-              ...sendData
-            },
-            callback: () => {
-              this.props.removeTabHandler(`Edit${id}`)
-              // 重新获取table列表（需要加上之前的搜索条件）
-              // dispatch({
-              //   type: 'article/fetch',
-              //   payload: {
-              //     ...params
-              //   }
-              // });
-            }
-          });
-        }
+        dispatch({
+          type: `article/${id ? 'edit' : 'add'}`,
+          payload: {
+            ...sendData
+          },
+          callback: () => {
+            this.props.removeTabHandler(`Edit${id}`)
+            // 重新获取table列表（需要加上之前的搜索条件）
+            // dispatch({
+            //   type: 'article/fetch',
+            //   payload: {
+            //     ...params
+            //   }
+            // });
+          }
+        });
       }
     });
   };
@@ -209,7 +213,12 @@ class Edit extends PureComponent<IProps, IStates> {
               initialValue: detail ? detail.remark : undefined,
             })(<Input maxLength={100}/>)}
           </FormItem>
-          <FormItem label='文章内容'>
+          <FormItem
+            wrapperCol={{
+              xs: { span: 22 },
+              sm: { span: 22 },
+              md: { span: 22 }
+            }} label='文章内容'>
             {getFieldDecorator('content', {
               initialValue: detail ? detail.content : undefined,
               rules: [

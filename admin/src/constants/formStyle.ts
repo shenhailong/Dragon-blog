@@ -15,9 +15,9 @@ const formItemLeftLayout = {
     sm: { span: 2 }
   },
   wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 12 },
-    md: { span: 10 }
+    xs: { span: 6 },
+    sm: { span: 6 },
+    md: { span: 6 }
   }
 };
 

@@ -26,6 +26,36 @@ class ArticleService extends Service {
       query,
     });
   }
+
+  // 详情
+  async show(id) {
+    const { ctx } = this;
+    const detail = await this.getArticleById(id);
+    ctx.returnBody({
+      data: detail,
+    });
+  }
+
+  // 删除
+  async destroy(id) {
+    const { ctx } = this;
+    await this.ctx.model.Article.destroy({
+      where: {
+        id,
+      },
+    });
+    ctx.returnBody({});
+  }
+
+  // 根据id获取
+  async getArticleById(id) {
+    return await this.ctx.model.Article.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+
 }
 
 module.exports = ArticleService;
