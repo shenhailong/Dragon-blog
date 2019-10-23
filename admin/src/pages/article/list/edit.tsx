@@ -50,11 +50,7 @@ class Edit extends PureComponent<IProps, IStates> {
         title: '',
         keyword: '',
         isOriginal: true,
-        category: {
-          name: '',
-          order: '',
-          status: true
-        },
+        categoryId: '',
         content: ''
       },
       editor: null
@@ -154,8 +150,8 @@ class Edit extends PureComponent<IProps, IStates> {
       <Card>
         <Form {...formItemLeftLayout} onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
           <Form.Item label="所属分类">
-            {getFieldDecorator('category', {
-              initialValue: detail ? detail.category.id : undefined,
+            {getFieldDecorator('categoryId', {
+              initialValue: detail ? detail.categoryId : undefined,
               rules: [
                 { required: true, message: '请选择所属分类' },
               ],

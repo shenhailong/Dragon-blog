@@ -24,13 +24,17 @@ module.exports = app => {
       type: STRING(255),
       allowNull: true,
     },
-    category: {
+    categoryId: {
       type: INTEGER,
       allowNull: false,
     },
     status: {
       type: STRING(30),
       allowNull: false,
+    },
+    remark: {
+      type: STRING(100),
+      allowNull: true,
     },
     isOriginal: {
       type: BOOLEAN,
@@ -47,5 +51,12 @@ module.exports = app => {
   }, {
     freezeTableName: true,
   });
-  return Article;
+  return class extends Article {
+    static associate() {
+      app.model.Article.belongsTo(app.model.Category, {
+        foreignKey: 'categoryId',
+        targetKey: 'id',
+      });
+    }
+  };
 };

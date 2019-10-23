@@ -20,6 +20,17 @@ class ArticleService extends Service {
     ctx.returnBody({});
   }
 
+  // 编辑
+  async update(id, data) {
+    const { ctx } = this;
+    await this.ctx.model.Article.update(data, {
+      where: {
+        id,
+      },
+    });
+    ctx.returnBody({});
+  }
+
   // 获取列表数据
   async getList(query) {
     return await this.ctx.model.Article.findAndCountAll({
@@ -53,6 +64,13 @@ class ArticleService extends Service {
       where: {
         id,
       },
+      include: [
+        {
+          model: this.app.model.Category,
+          as: 'category',
+          attributes: [ 'id', 'name' ],
+        },
+      ],
     });
   }
 

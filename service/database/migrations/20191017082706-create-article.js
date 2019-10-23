@@ -25,7 +25,7 @@ module.exports = {
         type: STRING(255),
         allowNull: true,
       },
-      category: {
+      categoryId: {
         type: INTEGER,
         allowNull: false,
       },
@@ -36,6 +36,10 @@ module.exports = {
       isOriginal: {
         type: BOOLEAN,
         allowNull: false,
+      },
+      remark: {
+        type: STRING(100),
+        allowNull: true,
       },
       createdAt: DATE,
       updatedAt: DATE,

@@ -24,8 +24,17 @@ class ArticleController extends Controller {
   async update() {
     const { ctx } = this;
     const { id } = ctx.params;
-    const { name, order, status } = ctx.request.body;
-    await ctx.service.article.update(id, { name, order, status });
+    const {
+      title,
+      keyword,
+      content,
+      img,
+      categoryId,
+      status,
+      isOriginal,
+      remark,
+    } = ctx.request.body;
+    await ctx.service.article.update(id, { title, keyword, content, img, categoryId, status, isOriginal, remark });
   }
 
   // 删除
