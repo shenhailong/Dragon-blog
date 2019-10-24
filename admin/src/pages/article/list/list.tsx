@@ -19,6 +19,7 @@ import {FormComponentProps} from 'antd/lib/form/Form';
 import { Article } from '@/ts/article';
 import { Category } from '@/ts/category';
 import { ConnectState, ConnectProps } from '@/ts/connect';
+import { ARTICLE_STATUS, LIST, DRAFT, DELIST } from '@/constants/status';
 import styles from './list.less'
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -46,10 +47,6 @@ interface IStates {
   dataSource: any;
 }
 
-interface columnsData {
-  title: string;
-  id: number;
-}
 type IProps = IOwnProps & IDispatchProps & FormComponentProps & ConnectProps;
 
 @connect(({ article }: { article: Article }) => ({
@@ -63,57 +60,71 @@ class Index extends PureComponent<IProps, IStates> {
       expandForm: false,
       columns: [
         {
+          align: 'center',
           title: '标题',
           dataIndex: 'title',
           key: 'title',
-          render: (text: string, record: columnsData) => (
+          render: (text: string, record: Article) => (
             <a onClick={() => { this.add('Detail', record.title, record.id) }} href="javascript:;">{text}</a>
           )
         },
         {
+          align: 'center',
           title: '关键字',
           dataIndex: 'keyword',
           key: 'keyword',
         },
         {
+          align: 'center',
           title: '所属分类',
-          dataIndex: 'category',
-          key: 'category',
+          dataIndex: 'category.name',
+          key: 'category.id',
         },
         {
+          align: 'center',
           title: '封面图',
           dataIndex: 'img',
           key: 'img',
-          render: (text: string, record: columnsData) => (
-            <a onClick={() => { this.add('Detail', record.title, record.id) }} href="javascript:;">{text}</a>
+          render: (text: string, record: Article) => (
+            <img src={text} height="60px" width="60px" />
           )
         },
         {
+          align: 'center',
           title: '状态',
           dataIndex: 'status',
           key: 'status',
+          render: (text: string, record: Article) => (
+            <div>{ARTICLE_STATUS[record.status]}</div>
+          )
         },
         {
+          align: 'center',
           title: '是否原创',
           dataIndex: 'isOriginal',
           key: 'isOriginal',
-          render: (text: boolean, record: columnsData) => (
+          render: (text: boolean, record: Article) => (
             <span>{text ? '是' : '否'}</span>
           )
         },
         {
+          align: 'center',
           title: '备注',
           dataIndex: 'remark',
           key: 'remark',
         },
         {
-          title: '操作',
           align: 'center',
-          render: (text: any, record: columnsData) => (
+          title: '操作',
+          render: (text: any, record: Article) => (
             <span>
-              <a onClick={() => { this.add('Edit', `编辑-${record.title}`, record.id) }} href="javascript:;">编辑</a>
+              <Button onClick={() => { this.add('Edit', `编辑-${record.title}`, record.id) }} type="primary">编辑</Button>
               <Divider type="vertical" />
-              <a onClick={() => { this.deleteData(record.id, record.title) }} href="javascript:;">删除</a>
+              <Button className={(record.status === DELIST || record.status === DRAFT) ? 'button-color-green' : 'button-color-sunset'} onClick={() => { this.changeStatus(record) }} type="primary">
+                {(record.status === DELIST || record.status === DRAFT) ? '发布' : '下架'}
+              </Button>
+              <Divider type="vertical" />
+              <Button onClick={() => { this.deleteData(record.id, record.title) }} type="danger">删除</Button>
             </span>
           ),
         },
@@ -308,30 +319,63 @@ class Index extends PureComponent<IProps, IStates> {
   };
 
   // 删除
-  deleteData = (id: number, name: string) => {
+  deleteData = (id: any, name: string) => {
     const { dispatch, article: {params} } = this.props;
-
     Modal.confirm({
       title: '删除文章',
       content: `确定删除文章--${name}吗？`,
       okText: '确认',
       cancelText: '取消',
       onOk: () => {
-        if (dispatch) {
-          dispatch({
-            type: 'article/remove',
-            payload: id,
-            callback: () => {
-              // 重新获取table列表（需要加上之前的搜索条件）
-              dispatch({
-                type: 'article/list',
-                payload: {
-                  ...params
-                }
-              });
-            }
-          });
-        }
+        dispatch({
+          type: 'article/remove',
+          payload: id,
+          callback: () => {
+            // 重新获取table列表（需要加上之前的搜索条件）
+            dispatch({
+              type: 'article/list',
+              payload: {
+                ...params
+              }
+            });
+          }
+        });
+      }
+    });
+  };
+
+  // 改变状态
+  changeStatus = (record: Article) => {
+    const { dispatch, article: {params} } = this.props;
+    const title =  record.status === DELIST || record.status === DRAFT ? '发布' : '下架'
+    const newStatus =  record.status === DELIST || record.status === DRAFT ? LIST : DELIST
+    let sendData = {
+      id: record.id,
+      data: {
+        status: newStatus
+      }
+    }
+    Modal.confirm({
+      title: `${title}文章`,
+      content: `确定${title}文章--${record.title}吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        dispatch({
+          type: 'article/status',
+          payload: {
+            ...sendData
+          },
+          callback: () => {
+            // 重新获取table列表（需要加上之前的搜索条件）
+            dispatch({
+              type: 'article/list',
+              payload: {
+                ...params
+              }
+            });
+          }
+        });
       }
     });
   };
@@ -344,12 +388,10 @@ class Index extends PureComponent<IProps, IStates> {
       current: pagination.current,
       ...params
     }
-    if (dispatch) {
-      dispatch({
-        type: 'article/list',
-        payload: param
-      });
-    }
+    dispatch({
+      type: 'article/list',
+      payload: param
+    });
   }
 
   render () {

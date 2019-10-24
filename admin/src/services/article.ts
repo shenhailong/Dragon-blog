@@ -39,3 +39,11 @@ export async function remove(id: number | string) {
     method: 'DELETE'
   });
 }
+
+// 改变状态
+export async function status(id: number | string, data: Article) {
+  return request(`/api/v1/article/${id}`, {
+    method: 'PUT',
+    data
+  });
+}

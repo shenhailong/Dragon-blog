@@ -35,6 +35,13 @@ class ArticleService extends Service {
   async getList(query) {
     return await this.ctx.model.Article.findAndCountAll({
       query,
+      include: [
+        {
+          model: this.app.model.Category,
+          as: 'category',
+          attributes: [ 'id', 'name' ],
+        },
+      ],
     });
   }
 

@@ -5,7 +5,7 @@ export interface Article {
   id?: string | number;
   title: string;
   keyword: string;
-  status?: boolean;
+  status: string;
   remark?: string;
   isOriginal: boolean;
   content: string;

@@ -51,7 +51,8 @@ class Edit extends PureComponent<IProps, IStates> {
         keyword: '',
         isOriginal: true,
         categoryId: '',
-        content: ''
+        content: '',
+        status: ''
       },
       editor: null
     }
@@ -128,12 +129,12 @@ class Edit extends PureComponent<IProps, IStates> {
           callback: () => {
             this.props.removeTabHandler(`Edit${id}`)
             // 重新获取table列表（需要加上之前的搜索条件）
-            // dispatch({
-            //   type: 'article/fetch',
-            //   payload: {
-            //     ...params
-            //   }
-            // });
+            dispatch({
+              type: 'article/list',
+              payload: {
+                // ...params
+              }
+            });
           }
         });
       }
@@ -157,6 +158,7 @@ class Edit extends PureComponent<IProps, IStates> {
               ],
             })(
               <Select placeholder="请选择所属分类">
+                {/* <Option value=''>请选择所属分类</Option> */}
                 {
                   allList.map( (item: Category) => {
                     return (

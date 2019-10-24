@@ -11,3 +11,34 @@ body {
 .margin0 .ant-tabs-bar{
   margin: 0;
 }
+
+/* button 颜色 */
+.button-color-green {
+  background-color: #67C23A;
+  border-color: #67C23A;
+}
+
+.button-color-green:hover, .button-color-green:focus {
+  background-color: #85ce61;
+  border-color: #85ce61;
+}
+
+.button-color-green:active, .button-color-green.active {
+  background-color: #85ce61;
+  border-color: #85ce61;
+}
+
+.button-color-sunset {
+  background-color: #FAAD14;
+  border-color: #FAAD14;
+}
+
+.button-color-sunset:hover, .button-color-sunset:focus {
+  background-color: #ffc53d;
+  border-color: #ffc53d;
+}
+
+.button-color-sunset:active, .button-color-sunset.active {
+  background-color: #d48806;
+  border-color: #d48806;
+}

@@ -1,4 +1,4 @@
-import { list, add, edit, detail, remove } from '@/services/article';
+import { list, add, edit, detail, remove, status } from '@/services/article';
 import { message } from 'antd';
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
@@ -19,6 +19,7 @@ export interface ArticleModelType {
     remove: Effect;
     detail: Effect;
     edit: Effect;
+    status: Effect;
   };
   reducers: {
     save: Reducer<Article>;
@@ -79,6 +80,14 @@ const Model: ArticleModelType = {
         if (callback) callback();
       }
     },
+    // 改变状态
+    *status({ payload, callback }, { call, put }) {
+      const response = yield call(status, payload.id, payload.data);
+      if(response.code === ResponseSuccess){
+        message.success('成功');
+        if (callback) callback();
+      }
+    }
   },
 
   reducers: {

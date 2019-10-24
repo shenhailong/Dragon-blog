@@ -6,7 +6,7 @@
 module.exports = {
   publish_status: {
     draft: 'DRAFT', // 草稿
-    list: 'LIST', // 上架
+    list: 'LIST', // 发布
     deList: 'DELIST', // 下架
   },
 };
