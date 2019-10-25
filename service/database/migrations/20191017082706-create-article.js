@@ -26,7 +26,7 @@ module.exports = {
         allowNull: true,
       },
       categoryId: {
-        type: INTEGER,
+        type: STRING(2),
         allowNull: false,
       },
       status: {

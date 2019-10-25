@@ -8,6 +8,21 @@ export const ARTICLE_STATUS: Status = {
   DELIST: '下架'
 }
 
+export const ARTICLE_STATUS_LIST = [
+  {
+    value: 'DRAFT',
+    label: '草稿',
+  },
+  {
+    value: 'LIST',
+    label: '发布',
+  },
+  {
+    value: 'DELIST',
+    label: '下架',
+  }
+]
+
 const DRAFT = 'DRAFT' // 草稿
 const LIST = 'LIST' // 发布
 const DELIST = 'DELIST' // 下架

@@ -158,7 +158,7 @@ class Edit extends PureComponent<IProps, IStates> {
               ],
             })(
               <Select placeholder="请选择所属分类">
-                {/* <Option value=''>请选择所属分类</Option> */}
+                <Option value=''>请选择所属分类</Option>
                 {
                   allList.map( (item: Category) => {
                     return (

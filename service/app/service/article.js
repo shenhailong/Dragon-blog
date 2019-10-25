@@ -2,6 +2,7 @@
 
 const Service = require('egg').Service;
 const status = require('../constant/status');
+
 class ArticleService extends Service {
   // 列表
   async index(data) {
@@ -33,8 +34,48 @@ class ArticleService extends Service {
 
   // 获取列表数据
   async getList(query) {
+    const Op = this.app.Sequelize.Op;
+    const obj = {
+      status: {
+        value: query.status,
+        mode: query.status,
+      },
+      isOriginal: {
+        value: query.isOriginal,
+        mode: query.isOriginal,
+      },
+      categoryId: {
+        value: query.categoryId,
+        mode: query.categoryId,
+      },
+      title: {
+        value: query.title,
+        mode: {
+          [Op.like]: `%${query.title}%`,
+        },
+      },
+      keyword: {
+        value: query.keyword,
+        mode: {
+          [Op.like]: `%${query.keyword}%`,
+        },
+      },
+      createdAt: {
+        value: query.createdAt,
+        mode: {
+          [Op.gt]: query.createdAt,
+        },
+      },
+    };
+    const whereObj = {};
+    Object.keys(obj).forEach(item => {
+      if (obj[item].value) {
+        whereObj[item] = obj[item].mode;
+      }
+    });
+    console.log(whereObj)
     return await this.ctx.model.Article.findAndCountAll({
-      query,
+      where: whereObj,
       include: [
         {
           model: this.app.model.Category,
@@ -42,6 +83,8 @@ class ArticleService extends Service {
           attributes: [ 'id', 'name' ],
         },
       ],
+      offset: query.offset,
+      limit: query.limit,
     });
   }
 

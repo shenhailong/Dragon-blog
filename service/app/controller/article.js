@@ -5,8 +5,19 @@ class ArticleController extends Controller {
   // 列表
   async index() {
     const { ctx } = this;
-    const { limit, offset } = ctx.request.body;
-    await ctx.service.article.index({ limit, offset });
+    const {
+      limit = 10,
+      offset = 0,
+      status,
+      isOriginal,
+      title,
+      categoryId,
+      keyword,
+      createdAt,
+    } = ctx.query;
+    const offsetNum = parseInt(offset);
+    const limitNum = parseInt(limit);
+    await ctx.service.article.index({ limit: limitNum, offset: offsetNum, status, isOriginal, title, categoryId, keyword, createdAt });
   }
   // 创建
   async create() {

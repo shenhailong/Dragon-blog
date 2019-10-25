@@ -19,7 +19,7 @@ import {FormComponentProps} from 'antd/lib/form/Form';
 import { Article } from '@/ts/article';
 import { Category } from '@/ts/category';
 import { ConnectState, ConnectProps } from '@/ts/connect';
-import { ARTICLE_STATUS, LIST, DRAFT, DELIST } from '@/constants/status';
+import { ARTICLE_STATUS, LIST, DRAFT, DELIST, ARTICLE_STATUS_LIST } from '@/constants/status';
 import styles from './list.less'
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -165,12 +165,12 @@ class Index extends PureComponent<IProps, IStates> {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="标题">
-              {getFieldDecorator('name')(<Input placeholder="请输入文章标题" />)}
+              {getFieldDecorator('title')(<Input placeholder="请输入文章标题" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="分类">
-              {getFieldDecorator('departmentId', {
+              {getFieldDecorator('categoryId', {
                 initialValue: ''
               })(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -207,7 +207,8 @@ class Index extends PureComponent<IProps, IStates> {
   // 查询表单复杂模式
   renderAdvancedForm() {
     const {
-      form: { getFieldDecorator }
+      form: { getFieldDecorator },
+      category: { allList }
     } = this.props;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
@@ -224,10 +225,18 @@ class Index extends PureComponent<IProps, IStates> {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="分类">
-              {getFieldDecorator('sex')(
+              {getFieldDecorator('categoryId', {
+                initialValue: ''
+              })(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
+                  <Option value={''} key={'selectEmpty'}>全部</Option>
+                  {
+                    allList.map( (item: Category) => {
+                      return (
+                        <Option value={item.id} key={item.id}>{item.name}</Option>
+                      )
+                    })
+                  }
                 </Select>
               )}
             </FormItem>
@@ -236,27 +245,32 @@ class Index extends PureComponent<IProps, IStates> {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="状态">
-              {getFieldDecorator('status3')(
+              {getFieldDecorator('status')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
+                  {
+                    ARTICLE_STATUS_LIST.map( (item: any) => {
+                      return (
+                        <Option value={item.value} key={item.value}>{item.label}</Option>
+                      )
+                    })
+                  }
                 </Select>
               )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="是否原创">
-              {getFieldDecorator('status4')(
+              {getFieldDecorator('isOriginal')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
+                  <Option value='1'>是</Option>
+                  <Option value='0'>否</Option>
                 </Select>
               )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="创建日期">
-              {getFieldDecorator('date')(
+            <FormItem label="创建开始日期">
+              {getFieldDecorator('createdAt')(
                 <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
               )}
             </FormItem>
@@ -295,12 +309,10 @@ class Index extends PureComponent<IProps, IStates> {
         offset: 0
       };
 
-      if(dispatch){
-        dispatch({
-          type: 'article/list',
-          payload: values,
-        });
-      }
+      dispatch({
+        type: 'article/list',
+        payload: values,
+      });
     });
   };
 
