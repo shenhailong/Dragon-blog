@@ -21,6 +21,10 @@ module.exports = appInfo => {
     },
   };
 
+  config.multipart = {
+    mode: 'file',
+  };
+
   // add your middleware config here
   config.middleware = [ 'jwt' ];
 

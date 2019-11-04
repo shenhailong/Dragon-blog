@@ -9,5 +9,6 @@ export interface Article {
   remark?: string;
   isOriginal: boolean;
   content: string;
+  img: string;
   categoryId: string | number;
 }

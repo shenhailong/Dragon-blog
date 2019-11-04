@@ -54,7 +54,6 @@ const Model: CategoryModelType = {
     *all({ payload }, { call, put }) {
       const res = yield call(all, payload);
       if(res.code === ResponseSuccess){
-        console.log(res.data)
         yield put({
           type: 'saveAll',
           payload: {
@@ -105,7 +104,6 @@ const Model: CategoryModelType = {
       };
     },
     saveAll(state, action) {
-      console.log(action)
       return {
         ...state,
         allList: action.payload.list

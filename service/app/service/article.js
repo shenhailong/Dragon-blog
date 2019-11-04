@@ -24,6 +24,7 @@ class ArticleService extends Service {
   // 编辑
   async update(id, data) {
     const { ctx } = this;
+    console.log(data)
     await this.ctx.model.Article.update(data, {
       where: {
         id,

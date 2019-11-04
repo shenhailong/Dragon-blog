@@ -40,6 +40,11 @@ interface IStates {
   submitting: boolean;
   detail: Article;
   editor: any;
+  fileList: {
+    uid: string | number;
+    status: string,
+    url: string
+  }[]
 }
 
 type IProps = IOwnProps & IDispatchProps & ConnectProps & FormComponentProps;
@@ -58,15 +63,8 @@ class Edit extends PureComponent<IProps, IStates> {
         status: '',
         img: ''
       },
-      fileList: [
-        {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-      ],
-      editor: null
+      editor: null,
+      fileList: []
     }
   }
 
@@ -117,25 +115,23 @@ class Edit extends PureComponent<IProps, IStates> {
             detail: data
           })
           this.state.editor.value(data.content)
-          const { form } = this.props;
-          const { fileList } = this.state;
-          setFieldsValue({ img: fileList });
         }
       });
     }
   }
 
   normFile = (e: any) => {
-    console.log(e)
+    console.log('?????')
     if (Array.isArray(e)) {
       return e;
     }
+    console.log(e)
     if(e.file.status === 'done'){
       if(e.file.response.code === 1){
         return e.file.response.data.path
       }
     }
-
+    console.log(e)
     return e && e.file.response && e.file.response.data.path;
   };
 
@@ -183,19 +179,8 @@ class Edit extends PureComponent<IProps, IStates> {
         authorization: 'authorization-text',
       },
       accept: 'image/*',
-      beforeUpload(file: any) {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-        if (!isJpgOrPng) {
-          message.error('You can only upload JPG/PNG file!')
-        }
-        const isLt2M = file.size / 1024 / 1024 < 2
-        if (!isLt2M) {
-          message.error('Image must smaller than 2MB!')
-        }
-        return isJpgOrPng && isLt2M
-      },
       onChange(info: any) {
-        console.log(info)
+        console.log('dasdadsaa')
         if (info.file.status !== 'uploading') {
           // console.log(info.file, info.fileList);
         }
@@ -205,16 +190,7 @@ class Edit extends PureComponent<IProps, IStates> {
           message.error(`${info.file.name} file upload failed.`);
         }
       },
-      onRemove(file) {
-        console.log(file)
-      }
     };
-    const uploadButton = (
-      <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
-        <div className="ant-upload-text">Upload</div>
-      </div>
-    );
     return (
       <Card>
         <Form {...formItemLeftLayout} onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
@@ -263,11 +239,20 @@ class Edit extends PureComponent<IProps, IStates> {
           </FormItem>
           <Form.Item label="封面图" extra="">
             {getFieldDecorator('img', {
+              initialValue: detail.img ? [
+                {
+                  uid: '-1',
+                  status: 'done',
+                  url: detail.img,
+                }
+              ] : '',
               valuePropName: 'fileList',
               getValueFromEvent: this.normFile,
             })(
-              <Upload name="logo" {...props} listType="picture-card">
-                <Icon type="upload" /> Click to upload
+              <Upload name="logo" fileList={this.state.fileList} {...props} listType="picture">
+                <Button>
+                  <Icon type="upload" /> Click to upload
+                </Button>
               </Upload>,
             )}
           </Form.Item>
