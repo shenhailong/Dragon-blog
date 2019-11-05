@@ -162,7 +162,7 @@ class SimpleMarkdown extends PureComponent<IProps, IStates> {
       <div>
         <TextArea rows={6} id={'content'}/>
         <Modal
-          title="Title"
+          title="上传图片"
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}

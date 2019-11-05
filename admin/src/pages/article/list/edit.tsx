@@ -244,6 +244,13 @@ class Edit extends PureComponent<IProps, IStates> {
             {getFieldDecorator('img', {
               initialValue: detail ? detail.img : '',
               getValueFromEvent: this.normFile,
+              rules: [
+                {
+                  touched: true,
+                  required: true,
+                  message: '请上传图片',
+                },
+              ],
             })(
               <Upload name="logo" {...props} listType="picture-card">
                 {this.state.detail.img ? <img src={this.state.detail.img} alt="avatar" style={{ width: '100%' }} /> : uploadButton}

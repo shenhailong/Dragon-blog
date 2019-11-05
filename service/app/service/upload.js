@@ -8,6 +8,7 @@ const secretKey = 'dWFQOrO1N80zcISXlKbXBc2_lhuwp8EZw--XiWpn';
 const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
 const options = {
   scope: 'dragon-blog',
+  expires: 864000,
 };
 const putPolicy = new qiniu.rs.PutPolicy(options);
 const uploadToken = putPolicy.uploadToken(mac);
