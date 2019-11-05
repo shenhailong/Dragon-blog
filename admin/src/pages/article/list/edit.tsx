@@ -17,10 +17,7 @@ import {FormComponentProps} from 'antd/lib/form/Form';
 import { ConnectState, ConnectProps } from '@/ts/connect';
 import { Category } from '@/ts/category';
 import { Article } from '@/ts/article';
-import SimpleMDE from 'simplemde';
-import marked from 'marked';
-import highlight from 'highlight.js';
-import 'simplemde/dist/simplemde.min.css';
+import SimpleMarkdown from '@/components/SimpleMDE'
 // import './style.less';
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -39,7 +36,8 @@ interface IDispatchProps {}
 interface IStates {
   submitting: boolean;
   detail: Article;
-  editor: any;
+  editorValue: string;
+  loading: boolean;
 }
 
 type IProps = IOwnProps & IDispatchProps & ConnectProps & FormComponentProps;
@@ -58,49 +56,13 @@ class Edit extends PureComponent<IProps, IStates> {
         status: '',
         img: ''
       },
-      fileList: [
-        {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-      ],
-      editor: null
+      loading: false,
+      editorValue: ''
     }
   }
 
   componentDidMount() {
     const { dispatch, id, category, form: { setFieldsValue } } = this.props;
-    this.setState({
-      editor: new SimpleMDE({
-        element: document.getElementById('content').childElementCount,
-        autofocus: true,
-        autosave: true,
-        previewRender(plainText: any) {
-          return marked(plainText, {
-            renderer: new marked.Renderer(),
-            gfm: true,
-            pedantic: false,
-            sanitize: false,
-            tables: true,
-            breaks: true,
-            smartLists: true,
-            smartypants: true,
-            highlight(code: any) {
-              return highlight.highlightAuto(code).value;
-            },
-          });
-        },
-      })
-    }, () => {
-      this.state.editor.codemirror.on("change", () => {
-        setFieldsValue({
-          content: this.state.editor.value()
-        })
-      });
-    })
-
     // 获取分类
     if(!category.allList.length){
       dispatch({
@@ -116,13 +78,19 @@ class Edit extends PureComponent<IProps, IStates> {
           this.setState({
             detail: data
           })
-          this.state.editor.value(data.content)
-          const { form } = this.props;
-          const { fileList } = this.state;
-          setFieldsValue({ img: fileList });
+          setFieldsValue({
+            content: data.content
+          })
         }
       });
     }
+  }
+
+  markdownChange = (value: string) => {
+    const { form: { setFieldsValue } } = this.props;
+    setFieldsValue({
+      content: value
+    })
   }
 
   normFile = (e: any) => {
@@ -172,13 +140,15 @@ class Edit extends PureComponent<IProps, IStates> {
 
   render () {
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, setFieldsValue },
       category: { allList }
     } = this.props;
     let detail = this.state.detail
+    const self = this
     const props = {
       name: 'file',
       action: '/api/v1/upload',
+      showUploadList: false,
       headers: {
         authorization: 'authorization-text',
       },
@@ -197,15 +167,24 @@ class Edit extends PureComponent<IProps, IStates> {
       onChange(info: any) {
         console.log(info)
         if (info.file.status !== 'uploading') {
-          // console.log(info.file, info.fileList);
+          self.setState({ loading: true })
         }
         if (info.file.status === 'done') {
+          const url = info.file.response.data.path
+          setFieldsValue({
+            img: url
+          })
+          let data = self.state.detail
+          data.img = url
+          self.setState({
+            detail: data
+          })
           message.success(`${info.file.name} file uploaded successfully`);
         } else if (info.file.status === 'error') {
           message.error(`${info.file.name} file upload failed.`);
         }
       },
-      onRemove(file) {
+      onRemove(file: any) {
         console.log(file)
       }
     };
@@ -263,12 +242,12 @@ class Edit extends PureComponent<IProps, IStates> {
           </FormItem>
           <Form.Item label="封面图" extra="">
             {getFieldDecorator('img', {
-              valuePropName: 'fileList',
+              initialValue: detail ? detail.img : '',
               getValueFromEvent: this.normFile,
             })(
               <Upload name="logo" {...props} listType="picture-card">
-                <Icon type="upload" /> Click to upload
-              </Upload>,
+                {this.state.detail.img ? <img src={this.state.detail.img} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              </Upload>
             )}
           </Form.Item>
           <Form.Item label="是否原创">
@@ -298,9 +277,9 @@ class Edit extends PureComponent<IProps, IStates> {
             {getFieldDecorator('content', {
               initialValue: detail ? detail.content : undefined,
               rules: [
-                { required: true, message: '请选择是否原创' },
+                { required: true, message: '请输入文章内容' },
               ],
-            })(<TextArea rows={6} />)}
+            })(<SimpleMarkdown  markdownChange={this.markdownChange} />)}
           </FormItem>
           <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
             <Button type="primary" htmlType="submit" loading={this.state.submitting}>
@@ -313,7 +292,7 @@ class Edit extends PureComponent<IProps, IStates> {
   }
 }
 
-const MyComponent = Form.create<IProps>()(Edit)
+const MyComponent = Form.create<IProps>({})(Edit)
 
 export default connect(({ category }: { category: {
   category: Category;

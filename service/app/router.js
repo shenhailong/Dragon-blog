@@ -32,6 +32,12 @@ module.exports = app => {
    * @describe 文章
    */
   // RESTful API
-  apiV1Router.post('/upload', controller.article.upload);
   apiV1Router.resources('article', '/article', controller.article);
+
+  /**
+   * @param *
+   * @describe 上传
+   */
+  // RESTful API
+  apiV1Router.post('/upload', controller.upload.upload);
 };
