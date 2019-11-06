@@ -1,6 +1,9 @@
 <template>
-  <div class="">
+  <div class="wrap wrap-index">
     <NavBar />
+    <main class="main-container">
+
+    </main>
   </div>
 </template>
 
@@ -23,3 +26,13 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.main-container{
+  background: #ffffff;
+  width: 960px;
+  margin: 0 auto;
+  min-height: 1000px;
+  margin-top: 20px;
+}
+</style>
