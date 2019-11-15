@@ -1,12 +1,26 @@
 <template>
   <div id="app">
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div> -->
-    <router-view/>
+    <div :class="getThemeName">
+      <router-view/>
+    </div>
   </div>
 </template>
+
+<script>
+import { mapGetters } from 'vuex'
+import * as THEME from '@store/types/theme'
+
+export default {
+  computed: {
+    ...mapGetters({
+      theme: THEME.GET_THEME
+    }),
+    getThemeName () {
+      return `theme-${this.theme}`
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 @import './scss/style.scss';
@@ -19,18 +33,5 @@ html{
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   margin: 0 auto;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>

@@ -1,4 +1,10 @@
 @import "tools/normalize.scss";
 @import "tools/variables.scss";
-@import "components/tag.scss";
+@import "tools/mixins.scss";
 
+// 组件
+@import "components/tag.scss";
+@import "components/nav-bar.scss";
+
+// 页面
+@import "views/index.scss";

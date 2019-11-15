@@ -17,6 +17,7 @@ module.exports = {
       .set('@components', resolve('src/components'))
       .set('@constants', resolve('src/constants'))
       .set('@config', resolve('src/config'))
+      .set('@store', resolve('src/store'))
     return config
   }
 }

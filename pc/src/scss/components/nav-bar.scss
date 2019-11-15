@@ -1,0 +1,128 @@
+.wrap-header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+.main-header{
+  background: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+  .logo{
+    height: 50px;
+    width: 50px;
+    margin-right: 50px;
+    cursor: pointer;
+    img{
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+    }
+  }
+
+  .container{
+    width: 960px;
+    margin: 0 auto;
+    height: 64px;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .bar{
+    display: flex;
+    .item{
+      font-size: 18px;
+      font-weight: 400;
+      position: relative;
+      height: 64px;
+      line-height: 64px;
+      padding: 0 20px;
+      cursor: pointer;
+      &.active{
+        color: $color-primary
+      }
+      &.active:before {
+        width: 100%;
+        left: 0;
+      }
+    }
+
+    .item:hover{
+      color: $color-primary
+    }
+
+    .item::before {
+      content: "";
+      position: absolute;
+      top: -3px;
+      left: 100%;
+      width: 0;
+      height: 100%;
+      border-bottom: 4px solid $color-primary;
+      transition: 0.1s all linear;
+    }
+    .item:hover::before {
+      width: 100%;
+      left: 0;
+    }
+    .item:hover ~ .item::before {
+      left: 0;
+    }
+  }
+
+  .theme-box{
+    flex: 1;
+    text-align: right;
+    position: relative;
+    &:hover{
+      .theme-list{
+        display: flex;
+      }
+    }
+    .theme-button{
+      font-size: 12px;
+      float: right;
+      border-radius: 5px;
+      padding: 5px 15px;
+      cursor: pointer;
+      @include themify() {
+        background: themed("color");
+      }
+    }
+
+    .theme-list{
+      padding: 5px;
+      position: absolute;
+      bottom: -70px;
+      right: 0;
+      padding: 10px;
+      display: none;
+      background: #eeeeee;
+      border-radius: 5px;
+      .item{
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        z-index: 1000;
+        margin: 0 5px;
+        cursor: pointer;
+        &.theme-cyan{
+          background: $theme-cyan
+        }
+        &.theme-blue{
+          background: $theme-blue
+        }
+        &.theme-red{
+          background: $theme-red
+        }
+        &.theme-yellow{
+          background: $theme-yellow
+        }
+        &.theme-violet{
+          background: $theme-violet
+        }
+      }
+    }
+  }
+}

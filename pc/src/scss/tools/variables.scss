@@ -2,3 +2,45 @@
 // Color
 $color-primary: #4791e6;
 $color-text-title: #333;
+
+// 主题色
+$theme-cyan: #94e6d3; // 青色
+$theme-blue: #4791e6; // 蓝色
+$theme-red: #fa2d40; // 红色
+$theme-yellow: #f3fa39; // 黄色
+$theme-violet: #ae60d2; // 紫色
+
+$white-color: #ffffff;
+$black-color: #000000;
+
+$themes: (
+  cyan: (
+    color: $theme-cyan,
+  ),
+  blue: (
+    color: $theme-blue,
+  ),
+  red: (
+    color: $theme-red,
+  ),
+  yellow: (
+    color: $theme-yellow,
+  ),
+  violet: (
+    color: $theme-violet,
+  ),
+  light: (
+    // color variables
+    primary-color: #f44,
+    // header
+    header-bg-color: #191a25,
+    header-text-color: $white-color,
+  ),
+  dark: (
+    // color variables
+    primary-color: #2977b5,
+    // header
+    header-bg-color: #e4393c,
+    header-text-color: $black-color,
+  ),
+)
