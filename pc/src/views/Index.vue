@@ -9,6 +9,7 @@
           v-for="item in category"
           :key="item.id"
           class="item"
+          :class="{active: form.categoryId === item.id }"
         >
           {{item.name}}
         </div>
@@ -23,6 +24,7 @@
       >
         <div class="article-list-wrap">
           <div
+            @click="goDetail(item.id)"
             v-for="item in articleList"
             :key="item.id"
             class="article-list"
@@ -38,7 +40,7 @@
             <div class="article-item-right">
               <img
                 :imgurl="item.img"
-                src=""
+                src="../assets/img/lazy.jpg"
               />
             </div>
           </div>
@@ -69,7 +71,7 @@ export default {
         },
         noMoreSize: 5, // 如果列表已无数据,可设置列表的总数量要大于等于5条才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
         toTop: {
-          src: './static/mescroll/mescroll-totop.png' // 回到顶部按钮的图片路径,支持网络图
+          src: '' // 回到顶部按钮的图片路径,支持网络图
         },
         htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
         lazyLoad: {
@@ -78,9 +80,10 @@ export default {
       },
       category: [], // 分类
       form: {
-        limit: 5,
+        limit: 10,
         offset: 0,
-        category: ''
+        status: 'LIST',
+        categoryId: ''
       },
       articleList: [] // 文章列表
     }
@@ -97,23 +100,35 @@ export default {
     async getCategory () {
       const res = await this.$axios.get('/api/v1/category/all')
       if (res.data.code === SUCCESS) {
+        res.data.data.unshift({
+          id: '',
+          name: '全部'
+        })
         this.category = res.data.data
       }
     },
     // 切换分类
     changeCategory (id) {
-
+      this.articleList = []// 在这里手动置空列表,可显示加载中的请求进度
+      this.form.categoryId = id
+      this.form.offset = 0
+      this.mescroll.resetUpScroll() // 刷新列表数据
     },
     // 获取文章
     async upCallback (page, mescroll) {
-      const res = await this.$axios.get('/api/v1/article')
+      const res = await this.$axios.get('/api/v1/article', this.form)
       if (res.data.code === SUCCESS) {
         let total = res.data.data.count
+        this.form.offset += this.form.limit
         this.articleList = this.articleList.concat(res.data.data.rows)
         this.$nextTick(() => {
           mescroll.endBySize(res.data.data.rows.length, total)
         })
       }
+    },
+    // 跳转详情
+    goDetail (id) {
+      this.$router.push(`/detail/${id}`)
     }
   }
 }

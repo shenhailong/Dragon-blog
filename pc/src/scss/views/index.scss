@@ -39,9 +39,17 @@
       color: $color-text-title;
       font-size: 16px;
       font-weight: 500;
+      &.active{
+        @include themify() {
+          color: themed("color");
+          border: 1px solid themed("color");
+        }
+      }
       &:hover {
-        color: $color-primary;
-        border: 1px solid $color-primary;
+        @include themify() {
+          color: themed("color");
+          border: 1px solid themed("color");
+        }
       }
     }
   }
@@ -79,6 +87,7 @@
       img {
         height: 80px;
         width: 80px;
+        border-radius: 5px;
       }
     }
   }

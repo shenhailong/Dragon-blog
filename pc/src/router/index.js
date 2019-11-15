@@ -10,6 +10,11 @@ const routes = [
     component: Index
   },
   {
+    path: '/detail/:id',
+    name: 'detail',
+    component: () => import(/* webpackChunkName: "game" */ '../views/index/Detail.vue')
+  },
+  {
     path: '/game',
     name: 'game',
     component: () => import(/* webpackChunkName: "game" */ '../views/Game.vue')
