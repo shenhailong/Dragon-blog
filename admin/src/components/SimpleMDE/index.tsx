@@ -5,7 +5,7 @@ import SimpleMDE from 'simplemde';
 import marked from 'marked';
 // @ts-ignore
 import highlight from 'highlight.js';
-import 'simplemde/dist/simplemde.min.css';
+// import 'simplemde/dist/simplemde.min.css';
 import {
   Input,
   Upload,

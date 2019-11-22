@@ -1,8 +1,58 @@
 .wrap-detail{
+  .empty {
+    height: 64px;
+    margin-bottom: 20px;
+  }
   .main-container {
     width: 960px;
     margin: 0 auto;
     min-height: 500px;
     position: relative;
+  }
+  .aside-box {
+    width: 240px;
+    background: #ffffff;
+    position: fixed;
+    top: 84px;
+    margin-left: 720px;
+  }
+  .title-list{
+    .item{
+      line-height: 30px;
+      padding: 4px 12px;
+      color: inherit;
+      position: relative;
+      color: #333333;
+      font-weight: 600;
+      cursor: pointer;
+      &.active{
+        background: #eeeeee;
+        @include themify() {
+          color: themed("color");
+        }
+      }
+      &:hover {
+        @include themify() {
+          color: themed("color");
+        }
+      }
+      &::after{
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 4px;
+        margin-top: -2px;
+        width: 4px;
+        height: 4px;
+        background-color: currentColor;
+        border-radius: 50%;
+      }
+    }
+  }
+  .text-wrap{
+    width: 700px;
+    img{
+      max-width: 100%;
+    }
   }
 }

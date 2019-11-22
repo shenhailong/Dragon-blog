@@ -17,6 +17,7 @@
     </div>
 
     <main class="main-container">
+      <div>
       <mescroll-vue
         ref="mescroll"
         :up="mescrollUp"
@@ -46,7 +47,8 @@
           </div>
         </div>
       </mescroll-vue>
-      <aside class="info-box"></aside>
+      </div>
+      <aside class="aside-box"></aside>
     </main>
   </div>
 </template>
