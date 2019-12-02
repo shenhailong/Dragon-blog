@@ -124,7 +124,7 @@ class Edit extends PureComponent<IProps, IStates> {
             ...sendData
           },
           callback: () => {
-            this.props.removeTabHandler(`Edit${id}`)
+            // this.props.removeTabHandler(`Edit${id}`)
             // 重新获取table列表（需要加上之前的搜索条件）
             dispatch({
               type: 'article/list',
@@ -154,15 +154,15 @@ class Edit extends PureComponent<IProps, IStates> {
       },
       accept: 'image/*',
       beforeUpload(file: any) {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-        if (!isJpgOrPng) {
-          message.error('You can only upload JPG/PNG file!')
+        const isJpgOrPngOrJif = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif'
+        if (!isJpgOrPngOrJif) {
+          message.error('You can only upload JPG/PNG/JIF file!')
         }
         const isLt2M = file.size / 1024 / 1024 < 2
         if (!isLt2M) {
           message.error('Image must smaller than 2MB!')
         }
-        return isJpgOrPng && isLt2M
+        return isJpgOrPngOrJif && isLt2M
       },
       onChange(info: any) {
         console.log(info)

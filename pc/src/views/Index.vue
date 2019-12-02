@@ -1,6 +1,7 @@
 <template>
   <div class="wrap wrap-index">
     <NavBar current="article" />
+    <MouseMove />
     <div class="empty"></div>
     <div class="center-container">
       <div class="tag-wrap">
@@ -56,10 +57,13 @@
 <script>
 import MescrollVue from 'mescroll.js/mescroll.vue'
 import NavBar from '@components/NavBar'
+import MouseMove from '@components/canvas/MouseMove'
+
 import SUCCESS from '@constants/responseCode'
 export default {
   components: {
     NavBar,
+    MouseMove,
     'mescroll-vue': MescrollVue
   },
   data () {

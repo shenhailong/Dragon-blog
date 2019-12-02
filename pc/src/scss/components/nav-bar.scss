@@ -27,6 +27,7 @@
     display: flex;
     justify-items: center;
     align-items: center;
+    position: relative;
   }
 
   .bar{
@@ -80,7 +81,8 @@
   .theme-box{
     flex: 1;
     text-align: right;
-    position: relative;
+    position: absolute;
+    right: 0;
     &:hover{
       .theme-list{
         display: flex;

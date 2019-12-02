@@ -3,8 +3,8 @@
     <NavBar current="article" />
     <div class="empty"></div>
     <main class="main-container">
-      <div class="text-wrap" v-html="contentMarkdown">
-        <!-- <div v-html="contentMarkdown"></div> -->
+      <div class="text-wrap editor-preview editor-preview-active" style="position:static">
+        <div v-html="contentMarkdown"></div>
       </div>
       <aside class="aside-box">
         <div class="title-list">
@@ -93,25 +93,17 @@ export default {
             id: id
           })
         })
-        setTimeout(() => {
-          this.anchorList.forEach(item => {
-            this.positionList.push({
-              position: document.getElementById(item.id).offsetTop,
-              id: item.id
+        // 找到所有标题的位置，使用setTimeout是因为图片会有延迟
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.anchorList.forEach(item => {
+              this.positionList.push({
+                position: document.getElementById(item.id).offsetTop,
+                id: item.id
+              })
             })
-          })
-        }, 1000)
-        // this.$nextTick(() => {
-        //   this.anchorList.forEach(item => {
-        //     console.log(item)
-        //     console.log(document.getElementById(item))
-        //     console.log(document.getElementById(item).offsetTop)
-        //     this.positionList.push({
-        //       position: document.getElementById(item).offsetTop,
-        //       id: item
-        //     })
-        //   })
-        // })
+          }, 1000)
+        })
       }
     }
   }

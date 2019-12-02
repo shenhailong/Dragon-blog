@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "start": "umi dev",
+    "dev": "umi dev",
     "build_old": "umi build",
     "build": "sh bin/build.sh",
     "test": "umi test",
