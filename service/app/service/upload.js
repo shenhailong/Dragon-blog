@@ -33,7 +33,7 @@ class UploadService extends Service {
         if (respInfo.statusCode === 200) {
           ctx.returnBody({
             data: {
-              path: 'http://pzxwek4zg.bkt.clouddn.com/' + respBody.key,
+              path: 'http://dragon-cn.qiniudns.com/' + respBody.key,
             },
           });
           resolve();

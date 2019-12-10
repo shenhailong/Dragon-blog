@@ -96,6 +96,8 @@ export default {
   },
   mounted () {
     this.getCategory()
+    console.log('ddd')
+    console.log(this.form.a.a)
   },
   methods: {
     // mescroll组件初始化的回调,可获取到mescroll对象
