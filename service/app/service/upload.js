@@ -1,4 +1,5 @@
 'use strict';
+// 七牛云上传，已经放弃
 const qiniu = require('qiniu');
 const config = new qiniu.conf.Config();
 // 空间对应的机房

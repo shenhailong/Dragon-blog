@@ -1,6 +1,6 @@
 <template>
   <div class="wrap wrap-game">
-    <NavBar current="game" />
+    <NavBar current="knowledge" />
     <div class="empty"></div>
     <div class="main-container">
       <div class="game-list">
@@ -34,7 +34,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-@import "../scss/tools/variables.scss";
-</style>

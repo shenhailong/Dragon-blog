@@ -18,3 +18,84 @@
 @function themed($key) {
   @return map-get($theme-map, $key);
 }
+
+/*------------------flex布局等分--------------------- */
+
+/*
+【百分比等分布局，可多行，可单行，可加间距】
+* $columnNum 列数, 默认是2
+* $gap 间距, 默认是30px
+* $lrGap 的间距要减去$gap的一半, 默认是15px
+* $lr 左右边缘是否有间距, 默认是false
+* $wrap 是否换行，默认是false
+* $children 子元素class|标签（li div p a span strong）
+*/
+
+@mixin equal-flex-percent( $columnNum: 2, $gap: 30px, $lrGap: 15px, $lr: false, $wrap: false, $children: li) {
+  display: flex;
+  $childrenEle: li div p a span strong;
+  @if $lr {
+    // 左右边缘是否有gap
+    padding-left: $lrGap;
+    padding-right: $lrGap;
+  }
+  @else {
+    // margin-left: -$gap/2;
+    // margin-right: -$gap/2;
+  }
+  @if $wrap {
+    // 是否换行
+    flex-wrap: wrap;
+  }
+  @if index($childrenEle, $children) {
+    // 常用元素
+    #{$children} {
+      width: 100% / $columnNum;
+      padding: 0 $gap/2;
+    }
+  }
+  @else {
+    .#{$children} {
+      // 自动加.成class
+      width: 830 / $columnNum + px;
+      padding: 0 $gap/2;
+    }
+  }
+}
+
+/*
+【
+  flex等分布局, 不可多行
+  仅适用于两种情况的布局，
+  1. 单行宽度等分自适应，默认无间距
+  2. 单行宽度自适应, 间距等分
+ 】
+* $children 子元素class|标签（li div p a span strong）
+* $equal 子元素宽度是否等分，默认false
+*/
+
+@mixin equal-flex($children: li, $equal: false) {
+  display: flex;
+  justify-content: space-between;
+  &:before,
+  &:after {
+    content: "";
+  }
+  $childrenEle: li div p a span strong;
+  @if index($childrenEle, $children) {
+    // 常用元素
+    #{$children} {
+      @if $equal {
+        flex: 1;
+      }
+    }
+  }
+  @else {
+    .#{$children} {
+      // 自动加.成class
+      @if $equal {
+        flex: 1;
+      }
+    }
+  }
+}

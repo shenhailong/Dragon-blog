@@ -3,7 +3,7 @@ const Controller = require('egg').Controller;
 
 class UploadController extends Controller {
   async upload() {
-    await this.ctx.service.upload.upload(this.ctx.request.files.filename, this.ctx.request.files[0].filepath);
+    await this.ctx.service.uploadAli.upload(this.ctx.request.files[0].filename, this.ctx.request.files[0].filepath);
   }
 }
 
