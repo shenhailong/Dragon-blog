@@ -6,6 +6,7 @@
 module.exports = app => {
   const { router, controller } = app;
   router.get('/admin', controller.admin.index);
+  router.get('/pc', controller.pc.index);
 
   // 版本
   const apiV1Router = router.namespace('/api/v1');
