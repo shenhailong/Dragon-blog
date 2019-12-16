@@ -5,8 +5,8 @@ rm -rf ./pc
 cp ./pc.tar.gz ../service/app/public
 rm ./pc.tar.gz
 cd ../service/app/public
-git checkout dev
-git pull
+# git checkout dev
+# git pull
 rm -rf ./pc
 tar -zxvf ./pc.tar.gz
 rm ./pc.tar.gz

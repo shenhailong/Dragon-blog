@@ -5,9 +5,8 @@ Vue.use(VueRouter)
 
 const routes = [
   { path: '/', redirect: '/index' },
-  { path: '*', redirect: '/index' },
   {
-    path: '/',
+    path: '/index',
     name: 'index',
     component: Index
   },
@@ -37,7 +36,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes,
   scrollBehavior (to, from, savedPosition) {
