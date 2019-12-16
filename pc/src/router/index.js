@@ -4,6 +4,8 @@ import Index from '@views/Index'
 Vue.use(VueRouter)
 
 const routes = [
+  { path: '/', redirect: '/index' },
+  { path: '*', redirect: '/index' },
   {
     path: '/',
     name: 'index',
