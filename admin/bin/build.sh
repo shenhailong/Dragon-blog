@@ -2,9 +2,9 @@ umi build
 cp -R ./dist ./admin
 tar -zcvf ./admin.tar.gz admin
 rm -rf ./admin
-cp ./admin.tar.gz ../roco-contacts/app/public
+cp ./admin.tar.gz ../service/app/public
 rm ./admin.tar.gz
-cd ../roco-contacts/app/public
+cd ../service/app/public
 git checkout dev
 git pull
 rm -rf ./admin

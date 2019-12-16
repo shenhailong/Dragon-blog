@@ -25,6 +25,13 @@ module.exports = appInfo => {
     mode: 'file',
   };
 
+  config.view = {
+    defaultViewEngine: 'nunjucks',
+    mapping: {
+      '.html': 'nunjucks',
+    },
+  };
+
   // add your middleware config here
   config.middleware = [ 'jwt' ];
 

@@ -12,6 +12,11 @@ module.exports = {
     package: 'egg-router-plus',
   },
 
+  nunjucks: {
+    enable: true,
+    package: 'egg-view-nunjucks',
+  },
+
   sequelize: {
     enable: true,
     package: 'egg-sequelize',
